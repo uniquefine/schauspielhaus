@@ -1,15 +1,12 @@
-use crate::models::Play;
 use crate::models::PlayWithScreenings;
 use crate::models::Screening;
 use anyhow::{anyhow, Context, Result};
 use chrono::NaiveDateTime;
 use lazy_static::lazy_static;
 use log::error;
-use regex::Regex;
 use reqwest;
 use scraper::ElementRef;
 use scraper::{Html, Selector};
-use serde_json;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::error::Error;
@@ -186,7 +183,7 @@ pub fn find_play_with_screenings(
         .collect::<Vec<String>>()
         .join("\n");
 
-    let mut collect_screening = |production_row: ElementRef| -> Result<Screening> {
+    let collect_screening = |production_row: ElementRef| -> Result<Screening> {
         // Search for `a.calendar-icon` in the production row
         let selector = Selector::parse("div.activity-ticket__calendar a").unwrap();
         // Extract the calendar event link

@@ -1,6 +1,4 @@
-use std::any::Any;
 
-use anyhow::Context;
 use clap::Parser;
 use clap::Subcommand;
 use diesel::PgConnection;
@@ -12,17 +10,13 @@ use rand::seq::SliceRandom;
 use schauspielhaus::establish_connection;
 use schauspielhaus::models::create_play_with_screenings;
 use schauspielhaus::models::get_chat;
-use schauspielhaus::models::get_chat_with_topics;
 use schauspielhaus::models::get_chats;
-use schauspielhaus::models::get_play;
 use schauspielhaus::models::get_play_for_topic;
 use schauspielhaus::models::get_plays_and_topics;
 use schauspielhaus::models::get_plays_without_topic;
-use schauspielhaus::models::get_screenings;
 use schauspielhaus::models::put_chat;
 use schauspielhaus::models::put_topic;
 use schauspielhaus::models::Chat;
-use schauspielhaus::models::ChatWithTopics;
 use schauspielhaus::models::PlayAndTopic;
 use schauspielhaus::models::PlayWithScreenings;
 use schauspielhaus::models::Screening;
@@ -37,9 +31,7 @@ use teloxide::{prelude::*, types::ChatKind, utils::command::BotCommands};
 use time::macros::format_description;
 use time::OffsetDateTime;
 use tokio::task;
-use tokio::task::spawn_blocking;
 use tokio::time::{sleep, Duration};
-use url::Url;
 
 #[derive(Parser)]
 #[command(name = "schau")]
