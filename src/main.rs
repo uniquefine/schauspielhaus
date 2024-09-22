@@ -148,6 +148,9 @@ enum Command {
     /// Refresh the topics for all plays in the database.
     #[command(description = "recreate the topics for all plays.")]
     Refresh,
+    /// Force a refresh of the topics for all plays in the database.
+    #[command(description = "force recreate the topics for all plays.")]
+    ForceRefresh,
     /// Start a poll for this play.
     #[command(description = "(in a play topic) start a poll for this play.")]
     Poll,
@@ -212,7 +215,7 @@ async fn answer(bot: Throttle<Bot>, msg: Message, cmd: Command) -> ResponseResul
                     return Ok(());
                 }
             }
-            match refresh_topics(&bot, msg.chat.id).await {
+            match refresh_topics(&bot, msg.chat.id, false).await {
                 Ok(_) => {
                     bot.send_message(msg.chat.id, "Topics created")
                         .await
@@ -237,7 +240,25 @@ async fn answer(bot: Throttle<Bot>, msg: Message, cmd: Command) -> ResponseResul
             if !ensure_chat_exists(&bot, msg.chat.id).await {
                 return Ok(());
             }
-            match refresh_topics(&bot, msg.chat.id).await {
+            match refresh_topics(&bot, msg.chat.id, false).await {
+                Ok(_) => {
+                    bot.send_message(msg.chat.id, "Topics refreshed")
+                        .await
+                        .expect("Error sending message");
+                }
+                Err(e) => {
+                    error!("Error refreshing topics for chat {}: {}", msg.chat.id.0, e);
+                    bot.send_message(msg.chat.id, format!("Error refreshing topics: {}", e))
+                        .await?;
+                }
+            }
+            return Ok(());
+        }
+        Command::ForceRefresh => {
+            if !ensure_chat_exists(&bot, msg.chat.id).await {
+                return Ok(());
+            }
+            match refresh_topics(&bot, msg.chat.id, true).await {
                 Ok(_) => {
                     bot.send_message(msg.chat.id, "Topics refreshed")
                         .await
@@ -356,7 +377,11 @@ fn random_icon_color() -> u32 {
     *colors.choose(&mut rand::thread_rng()).unwrap()
 }
 
-async fn refresh_topics(bot: &Throttle<Bot>, msg_chat_id: ChatId) -> Result<(), anyhow::Error> {
+async fn refresh_topics(
+    bot: &Throttle<Bot>,
+    msg_chat_id: ChatId,
+    force: bool,
+) -> Result<(), anyhow::Error> {
     let mut connection = &mut establish_connection();
     let plays = get_plays_and_topics(connection, msg_chat_id.0).map_err(|e| {
         error!("Error getting plays: {}", e.to_string());
@@ -406,22 +431,24 @@ async fn refresh_topics(bot: &Throttle<Bot>, msg_chat_id: ChatId) -> Result<(), 
             message_text.hash(&mut hasher);
             hasher.finish()
         })();
-        if (pinned_message_hash as u64) != message_hash && pinned_message_id != 0 {
-            // The message has changed, update it
-            match bot
-                .delete_message(msg_chat_id, teloxide::types::MessageId(pinned_message_id))
-                .await
-            {
-                Ok(_) => {}
-                Err(RequestError::Api(ApiError::MessageToDeleteNotFound)) => {
-                    // ignore if the message is already deleted
-                }
-                Err(e) => {
-                    errors.push(anyhow::Error::msg(format!(
-                        "Error deleting pinned message for play '{}': {}",
-                        play.name, e
-                    )));
-                    continue;
+        if force || (pinned_message_hash as u64) != message_hash {
+            if pinned_message_id != 0 {
+                // The message has changed, update it
+                match bot
+                    .delete_message(msg_chat_id, teloxide::types::MessageId(pinned_message_id))
+                    .await
+                {
+                    Ok(_) => {}
+                    Err(RequestError::Api(ApiError::MessageToDeleteNotFound)) => {
+                        // ignore if the message is already deleted
+                    }
+                    Err(e) => {
+                        errors.push(anyhow::Error::msg(format!(
+                            "Error deleting pinned message for play '{}': {}",
+                            play.name, e
+                        )));
+                        continue;
+                    }
                 }
             }
             pinned_message_id =
@@ -539,7 +566,7 @@ async fn run_sync_function_periodically(bot: &Throttle<Bot>) {
         let chats = get_chats(&mut establish_connection()).unwrap();
         for chat in chats {
             let chat_id = teloxide::prelude::ChatId(chat.id);
-            match refresh_topics(bot, chat_id).await {
+            match refresh_topics(bot, chat_id, false).await {
                 Ok(_) => {
                     match bot
                         .send_message(chat_id, "Topics refreshed")

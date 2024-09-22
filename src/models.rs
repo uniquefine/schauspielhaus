@@ -201,6 +201,7 @@ pub fn get_play_for_topic(
     topic_id: i32,
 ) -> Result<PlayWithScreenings, diesel::result::Error> {
     use crate::schema::plays;
+    use crate::schema::screenings;
     use crate::schema::topics;
 
     let topic = topics::table.find(topic_id).first::<Topic>(conn)?;
@@ -209,6 +210,7 @@ pub fn get_play_for_topic(
 
     let screenings = Screening::belonging_to(&play)
         .select(Screening::as_select())
+        .order_by(screenings::start_time.asc())
         .load(conn)?;
 
     Ok(PlayWithScreenings { play, screenings })
@@ -309,6 +311,7 @@ pub fn get_plays_and_topics(
     let play_ids = results.iter().map(|(play, _)| play.id).collect::<Vec<_>>();
     let screenings = screenings::table
         .filter(screenings::play_id.eq_any(play_ids))
+        .order_by(screenings::start_time.asc())
         .load::<Screening>(conn)?;
 
     // Group the screenings by play_id
