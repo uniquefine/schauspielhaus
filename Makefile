@@ -12,6 +12,7 @@ proxy-prod-db:
 
 migrations-prod:
 	op run --env-file=prod-env -- diesel setup
+	op run --env-file=prod-env -- diesel migration run
 
 scrape-prod:
 	op run --env-file=prod-env -- cargo run -- scrape
