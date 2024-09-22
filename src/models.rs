@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use diesel::prelude::*;
 use serde;
 use time::{format_description, OffsetDateTime};
@@ -40,6 +42,7 @@ pub struct Topic {
     pub chat_id: i64,
     pub play_id: i32,
     pub last_updated: OffsetDateTime,
+    pub pinned_message_id: i32,
 }
 
 #[derive(
@@ -118,31 +121,62 @@ pub struct NewPlayWithScreenings<'a> {
     pub screenings: Vec<NewScreening<'a>>,
 }
 
-pub struct PlayWithChats {
-    pub play: Play,
-    pub chats: Vec<ChatWithTopics>,
+pub struct PlayAndTopic {
+    pub play: PlayWithScreenings,
+    pub topic: Option<Topic>,
 }
 
 #[derive(Default)]
 pub struct ChatWithTopics {
     pub chat: Chat,
-    pub topics: Vec<Topic>,
+    pub topics: Vec<(Topic, PlayWithScreenings)>,
 }
 
 pub fn get_chat_with_topics(
     conn: &mut PgConnection,
     chat_id: i64,
 ) -> Result<ChatWithTopics, diesel::result::Error> {
-    use crate::schema::chats;
-    use crate::schema::topics;
+    use crate::schema::{chats, plays, screenings, topics};
 
+    // Fetch the chat
     let chat = chats::table.find(chat_id).first::<Chat>(conn)?;
 
-    let topics = topics::table
+    // Join topics, plays, and screenings tables and filter by chat_id
+    let results = topics::table
+        .inner_join(plays::table.on(plays::id.eq(topics::play_id)))
+        .inner_join(screenings::table.on(screenings::play_id.eq(plays::id)))
         .filter(topics::chat_id.eq(chat_id))
-        .load::<Topic>(conn)?;
+        .select((
+            topics::all_columns,
+            plays::all_columns,
+            screenings::all_columns,
+        ))
+        .load::<(Topic, Play, Screening)>(conn)?;
 
-    Ok(ChatWithTopics { chat, topics })
+    // Group the results by topic and play
+    let mut topics_map: std::collections::HashMap<i32, (Topic, PlayWithScreenings)> =
+        std::collections::HashMap::new();
+    for (topic, play, screening) in results {
+        topics_map
+            .entry(topic.play_id)
+            .and_modify(|(_, play_with_screenings)| {
+                play_with_screenings.screenings.push(screening.clone())
+            })
+            .or_insert_with(|| {
+                (
+                    topic.clone(),
+                    PlayWithScreenings {
+                        play,
+                        screenings: vec![screening],
+                    },
+                )
+            });
+    }
+
+    Ok(ChatWithTopics {
+        chat,
+        topics: topics_map.into_iter().map(|(_, v)| v).collect(),
+    })
 }
 
 pub fn get_play(
@@ -204,12 +238,17 @@ pub fn get_chat(conn: &mut PgConnection, chat_id: i64) -> Result<Chat, diesel::r
     chats::table.find(chat_id).first::<Chat>(conn)
 }
 
+pub fn get_chats(conn: &mut PgConnection) -> Result<Vec<Chat>, diesel::result::Error> {
+    use crate::schema::chats;
+    chats::table.load::<Chat>(conn)
+}
+
 pub fn put_topic(conn: &mut PgConnection, topic: Topic) -> Result<Topic, diesel::result::Error> {
     use crate::schema::topics;
     let changeset_topic = topic.clone();
     diesel::insert_into(topics::table)
         .values(topic)
-        .on_conflict(topics::message_thread_id)
+        .on_conflict((topics::message_thread_id, topics::chat_id))
         .do_update()
         .set(&changeset_topic)
         .get_result::<Topic>(conn)
@@ -250,6 +289,59 @@ pub fn get_plays_without_topic(
         .collect::<Vec<(Play, Vec<Screening>)>>();
 
     Ok(screenings_per_play)
+}
+
+pub fn get_plays_and_topics(
+    conn: &mut PgConnection,
+    chat_id: i64,
+) -> Result<Vec<PlayAndTopic>, diesel::result::Error> {
+    use crate::schema::{plays, screenings, topics};
+
+    // Join plays, topics, and screenings tables and filter by chat_id
+    let results = plays::table
+        .left_join(topics::table.on(plays::id.eq(topics::play_id)))
+        .left_outer_join(screenings::table.on(screenings::play_id.eq(plays::id)))
+        .filter(topics::chat_id.eq(chat_id))
+        .select((
+            plays::all_columns,
+            topics::all_columns.nullable(),
+            screenings::all_columns.nullable(),
+        ))
+        .load::<(Play, Option<Topic>, Option<Screening>)>(conn)?;
+
+    // Group the results by play and topic
+    let mut plays_map: HashMap<i32, (Play, Option<Topic>, Vec<Screening>)> = HashMap::new();
+    for (play, topic, screening) in results {
+        if plays_map.get(&play.id).is_none() {
+            plays_map.insert(
+                play.id,
+                (
+                    play,
+                    topic,
+                    screening
+                        .as_ref()
+                        .map(core::slice::from_ref)
+                        .unwrap_or_default()
+                        .to_vec(),
+                ),
+            );
+        } else {
+            plays_map
+                .get_mut(&play.id)
+                .map(|(_, _, screenings)| screening.map(|s| screenings.push(s)));
+        }
+    }
+
+    // Convert the grouped results into PlayAndTopic structures
+    let plays_and_topics = plays_map
+        .into_iter()
+        .map(|(_, (play, topic, screenings))| PlayAndTopic {
+            play: PlayWithScreenings { play, screenings },
+            topic,
+        })
+        .collect::<Vec<PlayAndTopic>>();
+
+    Ok(plays_and_topics)
 }
 
 pub fn create_play_with_screenings(

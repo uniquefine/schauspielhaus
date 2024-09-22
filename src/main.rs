@@ -13,14 +13,17 @@ use schauspielhaus::establish_connection;
 use schauspielhaus::models::create_play_with_screenings;
 use schauspielhaus::models::get_chat;
 use schauspielhaus::models::get_chat_with_topics;
+use schauspielhaus::models::get_chats;
 use schauspielhaus::models::get_play;
 use schauspielhaus::models::get_play_for_topic;
+use schauspielhaus::models::get_plays_and_topics;
 use schauspielhaus::models::get_plays_without_topic;
 use schauspielhaus::models::get_screenings;
 use schauspielhaus::models::put_chat;
 use schauspielhaus::models::put_topic;
 use schauspielhaus::models::Chat;
 use schauspielhaus::models::ChatWithTopics;
+use schauspielhaus::models::PlayAndTopic;
 use schauspielhaus::models::PlayWithScreenings;
 use schauspielhaus::models::Screening;
 use schauspielhaus::models::Topic;
@@ -57,6 +60,9 @@ enum Commands {
     // Command to list plays in the database
     #[command(about = "List plays in the database")]
     List,
+    // List all chats in the database
+    #[command(about = "List chats in the database")]
+    ListChats,
 }
 
 #[tokio::main]
@@ -88,6 +94,15 @@ async fn main() {
                 for screening in screenings {
                     println!("  {}", screening);
                 }
+            }
+        })
+        .await
+        .unwrap(),
+        Commands::ListChats => task::spawn_blocking(|| {
+            let connection = &mut establish_connection();
+            let chats = get_chats(connection).unwrap();
+            for chat in chats {
+                println!("{}: {}", chat.id, chat.name);
             }
         })
         .await
@@ -376,34 +391,75 @@ async fn random_forum_icon(bot: &Throttle<Bot>) -> Result<Option<String>, Reques
 
 async fn refresh_topics(bot: &Throttle<Bot>, msg_chat_id: ChatId) -> Result<(), anyhow::Error> {
     let mut connection = &mut establish_connection();
-    let plays = get_plays_without_topic(connection, msg_chat_id.0).map_err(|e| {
+    let plays = get_plays_and_topics(connection, msg_chat_id.0).map_err(|e| {
         error!("Error getting plays: {}", e.to_string());
         e
     })?;
     // collect errors
     let mut errors = vec![];
-    for (play, screenings) in plays {
-        let icon = random_forum_icon(&bot).await?.unwrap_or("".to_string());
-        let t = match bot
-            .create_forum_topic(msg_chat_id, &play.name.replace("\n", " "), 0, icon)
-            .await
-        {
-            Ok(t) => t,
-            Err(e) => {
-                errors.push(anyhow::Error::msg(format!(
-                    "Error creating topic for play '{}': {}",
-                    play.name, e
-                )));
-                continue;
+    for PlayAndTopic {
+        play: PlayWithScreenings { play, screenings },
+        topic,
+    } in plays
+    {
+        let message_thread_id = match &topic {
+            Some(t) => t.message_thread_id,
+            None => {
+                // Create the forum topic
+                let icon = random_forum_icon(&bot).await?.unwrap_or("".to_string());
+                let t = match bot
+                    .create_forum_topic(msg_chat_id, &play.name, 0, icon)
+                    .await
+                {
+                    Ok(t) => t,
+                    Err(e) => {
+                        errors.push(anyhow::Error::msg(format!(
+                            "Error creating topic for play '{}': {}",
+                            play.name, e
+                        )));
+                        continue;
+                    }
+                };
+                debug!("Created topic {} with ID {}", t.name, t.message_thread_id);
+                t.message_thread_id
             }
         };
-        debug!("Created topic {} with ID {}", t.name, t.message_thread_id);
+        // Delete the existing pinned message
+        if let Some(t) = &topic {
+            match bot
+                .delete_message(msg_chat_id, teloxide::types::MessageId(t.pinned_message_id))
+                .await
+            {
+                Ok(_) => {}
+                Err(e) => {
+                    errors.push(anyhow::Error::msg(format!(
+                        "Error deleting pinned message for play '{}': {}",
+                        play.name, e
+                    )));
+                    // Don't continue here if e.g. the message was already deleted
+                    // we still want to send the new message.
+                }
+            }
+        }
+
+        let pinned_message_id =
+            match send_play_info(&bot, msg_chat_id, &play, &screenings, message_thread_id).await {
+                Ok(id) => id,
+                Err(e) => {
+                    errors.push(anyhow::Error::msg(format!(
+                        "Error sending play info for play '{}': {}",
+                        play.name, e
+                    )));
+                    continue;
+                }
+            };
         match put_topic(
             &mut connection,
             Topic {
-                message_thread_id: t.message_thread_id,
+                message_thread_id: message_thread_id,
                 play_id: play.id,
                 chat_id: msg_chat_id.0,
+                pinned_message_id: pinned_message_id,
                 last_updated: OffsetDateTime::now_utc(),
             },
         ) {
@@ -411,17 +467,6 @@ async fn refresh_topics(bot: &Throttle<Bot>, msg_chat_id: ChatId) -> Result<(), 
             Err(e) => {
                 errors.push(anyhow::Error::msg(format!(
                     "Error saving topic for play '{}' in database: {}",
-                    play.name, e
-                )));
-                continue;
-            }
-        };
-
-        match send_play_info(&bot, msg_chat_id, &play, &screenings, t.message_thread_id).await {
-            Ok(_) => {}
-            Err(e) => {
-                errors.push(anyhow::Error::msg(format!(
-                    "Error sending play info for play '{}': {}",
                     play.name, e
                 )));
                 continue;
@@ -447,35 +492,45 @@ async fn send_play_info(
     play: &schauspielhaus::models::Play,
     screenings: &Vec<schauspielhaus::models::Screening>,
     message_thread_id: i32,
-) -> Result<(), RequestError> {
-    bot.send_message(
-        msg_chat_id,
-        format!(
-            "[{}]({}{})",
-            &play.name,
-            schauspielhaus::scrape::BASE_URL,
-            play.url
-        ),
-    )
-    .parse_mode(ParseMode::MarkdownV2)
-    .reply_to_message_id(teloxide::types::MessageId(message_thread_id))
-    .await?;
-    if play.description != "" {
-        bot.send_message(msg_chat_id, play.description.clone())
-            //.parse_mode(ParseMode::MarkdownV2)
-            .reply_to_message_id(teloxide::types::MessageId(message_thread_id))
-            .await?;
+) -> Result<i32, RequestError> {
+    let mut message_text = format!(
+        "\
+🎭 [*{}*]({}{})
+
+{}
+
+{}
+",
+        play.name,
+        schauspielhaus::scrape::BASE_URL,
+        play.url,
+        play.description,
+        play.meta_info,
+    );
+    if screenings.len() > 0 {
+        message_text.push_str("\n🎟️ *Screenings*:");
     }
-    if play.meta_info != "" {
-        bot.send_message(msg_chat_id, play.meta_info.clone())
-            .reply_to_message_id(teloxide::types::MessageId(message_thread_id))
-            .await?;
+    for screening in screenings {
+        message_text.push_str(&format!(
+            "\n- {} [tickets]({})",
+            option(&screening),
+            format!(
+                "https://www.zurichticket.ch/shz.webshop/webticket/shop?event={}",
+                screening
+                    .webid
+                    .trim_start_matches("event_")
+                    .trim_end_matches("@www.schauspielhaus.ch"),
+            )
+        ));
     }
-    if screenings.len() == 0 {
-        return Ok(());
-    }
+    let pinned_msg = bot
+        .send_message(msg_chat_id, message_text)
+        .parse_mode(ParseMode::MarkdownV2)
+        .reply_to_message_id(teloxide::types::MessageId(message_thread_id))
+        .await?;
+
     // TODO: send screenigns
-    Ok(())
+    Ok(pinned_msg.id.0)
 }
 
 async fn run_sync_function_periodically() {
