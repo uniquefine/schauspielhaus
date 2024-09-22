@@ -1,0 +1,84 @@
+{
+  "play": {
+    "id": 0,
+    "url": "/de/play/der-zerbrochne-krug",
+    "name": "Peiden",
+    "description": "PEIDEN ist ein sehr persönliches und vielschichtiges Theaterprojekt des Schweizer Schauspielers Bruno Cathomas auf Schweizerdeutsch, Hochdeutsch und Rätoromanisch, welches im Oktober 2022 am Theater Chur Premiere feierte. Es entstand in Zusammenarbeit mit Rafael Sanchez, dem designierten Zürcher Co-Intendanten ab 2025. In unserer Interimsspielzeit 2024/25 gibt er mit der Übernahme dieser Inszenierung einen Vorgeschmack seiner Arbeit als Regisseur am Schauspielhaus.",
+    "image_url": "/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=1600",
+    "meta_info": "Pfauen\n80 Minuten, ohne Pause\nZürich-Premiere: September 2024"
+  },
+  "screenings": [
+    {
+      "id": 0,
+      "play_id": 0,
+      "webid": "event_31444@www.schauspielhaus.ch",
+      "location": "",
+      "url": "/de/kalender/30781/peiden/31444.ics",
+      "start_time": [
+        2024,
+        271,
+        20,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": 0,
+      "play_id": 0,
+      "webid": "event_31445@www.schauspielhaus.ch",
+      "location": "",
+      "url": "/de/kalender/30781/peiden/31445.ics",
+      "start_time": [
+        2024,
+        272,
+        20,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": 0,
+      "play_id": 0,
+      "webid": "event_31786@www.schauspielhaus.ch",
+      "location": "",
+      "url": "/de/kalender/30781/peiden/31786.ics",
+      "start_time": [
+        2024,
+        280,
+        16,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": 0,
+      "play_id": 0,
+      "webid": "event_31820@www.schauspielhaus.ch",
+      "location": "",
+      "url": "/de/kalender/30781/peiden/31820.ics",
+      "start_time": [
+        2024,
+        308,
+        17,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0
+      ]
+    }
+  ]
+}

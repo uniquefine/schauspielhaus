@@ -9,7 +9,9 @@ use regex::Regex;
 use reqwest;
 use scraper::ElementRef;
 use scraper::{Html, Selector};
+use serde_json;
 use std::collections::HashMap;
+use std::collections::HashSet;
 use std::error::Error;
 #[allow(unused_imports)]
 use std::fs::File;
@@ -20,35 +22,47 @@ use std::io::Write;
 use time::OffsetDateTime;
 use time::UtcOffset;
 
-const BASE_URL: &str = "https://www.schauspielhaus.ch";
+pub const BASE_URL: &str = "https://www.schauspielhaus.ch";
+
+// Prefix that all play titles have in common.
+pub const TITLE_PREFIX: &str = "Schauspielhaus Zürich: ";
 
 lazy_static! {
     // Select the screening rows on the play page.
-    static ref SCREENING_SELECTOR: Selector = Selector::parse("div.activity-snippet").unwrap();
+    static ref SCREENING_SELECTOR: Selector = Selector::parse("div.article-event").unwrap();
     // Select the meta info of the play (duration, subtitles, etc.) on the play page.
-    static ref METAINFO_SELECTOR: Selector = Selector::parse("ul.infos-column__list li").unwrap();
+    static ref METAINFO_SELECTOR: Selector = Selector::parse("div.article-content__info").unwrap();
     // Select the play titles on the calendar page.
-    static ref PLAY_TITLE_SELECTOR: Selector = Selector::parse("a.activity__title").unwrap();
+    static ref PLAY_CALENDAR_TITLES_SELECTOR: Selector = Selector::parse("a.calendar-item__title").unwrap();
+    // Select the play title on the play page.
+    static ref PLAY_TITLE_SELECTOR: Selector = Selector::parse("h1.article__title").unwrap();
+    // Select the play description on the play page.
+    static ref PLAY_DESCRIPTION_SELECTOR: Selector = Selector::parse("div.article-content__text p").unwrap();
 }
 
-pub fn get_plays() -> Result<HashMap<String, PlayWithScreenings>> {
-    // base url
+pub fn download_calendar() -> Result<String> {
     let kalender_url = format!("{}/de/kalender", BASE_URL);
-
-    // Make a GET request and retrieve the HTML content, on error log the error and return None
     let html_content = reqwest::blocking::get(&kalender_url)
         .context("loading main calendar page")?
         .text()
         .context("reading main calendar page")?;
+    Ok(html_content)
+}
 
-    // Parse the HTML content with the scraper library
-    let fragment = Html::parse_document(&html_content);
+#[test]
+fn test_download_calendar() {
+    let html_content = download_calendar().unwrap();
+    // write content to testdata/calendar.html file
+    let mut file = File::create("src/testdata/calendar.html").unwrap();
+    file.write_all(html_content.as_bytes()).unwrap();
+}
 
-    // Iterate over all elements matching the given selector and add them to a map[url]Play.
-    // For each Play just fill in the name (the inner HTML of the <a> tag) and the URL (the href of the <a> tag).
-    let mut plays: HashMap<String, PlayWithScreenings> = HashMap::new();
-    for element in fragment.select(&PLAY_TITLE_SELECTOR) {
-        let name = element.inner_html();
+fn find_plays(html_content: &str) -> Vec<String> {
+    let fragment = Html::parse_document(html_content);
+    let mut plays: HashSet<String> = HashSet::new();
+    for element in fragment.select(&PLAY_CALENDAR_TITLES_SELECTOR) {
+        let raw_name = element.inner_html();
+        let name = raw_name.trim();
         let url = match element.value().attr("href") {
             Some(url) => url.to_string(),
             None => {
@@ -56,49 +70,125 @@ pub fn get_plays() -> Result<HashMap<String, PlayWithScreenings>> {
                 continue;
             }
         };
+        plays.insert(url.clone());
+    }
+    plays.into_iter().collect()
+}
 
-        let p = match get_play(&url) {
+#[test]
+fn test_find_plays() {
+    let mut file = File::open("src/testdata/calendar.html").unwrap();
+    let mut html_content = String::new();
+    file.read_to_string(&mut html_content).unwrap();
+    let plays = find_plays(&html_content);
+    // json marshall plays to string with indentation
+    let plays_json = serde_json::to_string_pretty(&plays).unwrap();
+    goldie::assert!(plays_json);
+}
+
+// get_plays downloads a the plays from the schauspielhaus calendar
+// and returns a map title -> PlayWithScreenings.
+pub fn get_plays() -> Result<HashMap<String, PlayWithScreenings>> {
+    // base url
+    let html_content = download_calendar()?;
+
+    let plays = find_plays(&html_content);
+    let mut plays_with_screenings: HashMap<String, PlayWithScreenings> = HashMap::new();
+    for play in plays {
+        let p = match get_play(&play) {
             Ok(p) => p,
             Err(e) => {
                 error!(
                     "Error while requesting play info {}: {}",
-                    url,
+                    play,
                     e.to_string()
                 );
                 continue;
             }
         };
-        plays.insert(url.clone(), p);
+        plays_with_screenings.insert(play.clone(), p);
     }
-    Ok(plays)
+    Ok(plays_with_screenings)
 }
 
-pub fn get_play<'a>(url: &str) -> Result<PlayWithScreenings, Box<dyn Error>> {
-    let mut play = PlayWithScreenings {
-        play: Play {
-            id: 0,
-            url: url.to_string(),
-            name: "".to_string(),
-            description: "".to_string(),
-            image_url: "".to_string(),
-            meta_info: "".to_string(),
-        },
-        screenings: Vec::new(),
-    };
+#[test]
+fn test_download_play() {
+    let play = &find_plays(&download_calendar().unwrap())[0];
+    let play_page_content = reqwest::blocking::get(format!("{}{}", BASE_URL, play))
+        .unwrap()
+        .text()
+        .unwrap();
+    goldie::assert!(play_page_content);
+}
 
-    let play_page_content = reqwest::blocking::get(format!("{}{}", BASE_URL, url))?.text()?;
+#[test]
+fn test_find_play_with_screenings() {
+    // read html from src/testdata/test_download_play.golden
+    let mut file = File::open("src/testdata/test_download_play.golden").unwrap();
+    let mut html_content = String::new();
+    file.read_to_string(&mut html_content).unwrap();
+    let play = find_play_with_screenings("/de/play/der-zerbrochne-krug", &html_content).unwrap();
+    let play_json = serde_json::to_string_pretty(&play).unwrap();
+    goldie::assert!(play_json);
+}
+
+pub fn find_play_with_screenings(
+    url: &str,
+    play_page_content: &str,
+) -> Result<PlayWithScreenings, Box<dyn Error>> {
+    let mut play = PlayWithScreenings::default();
+    play.play.url = url.to_string();
+
     let fragment = Html::parse_document(&play_page_content);
+
+    play.play.name = fragment
+        .select(&PLAY_TITLE_SELECTOR)
+        .next()
+        .map(|element| {
+            element
+                .text()
+                .collect::<String>()
+                .replace("\n", " ")
+                .trim()
+                .to_string()
+        })
+        .unwrap_or("".to_string());
+
+    play.play.description = fragment
+        .select(&PLAY_DESCRIPTION_SELECTOR)
+        .map(|element| {
+            element
+                .text()
+                .collect::<String>()
+                .replace("\n", " ")
+                .trim()
+                .to_string()
+        })
+        .collect::<Vec<String>>()
+        .join("\n");
 
     // Get meta info (text that is to the left of the screening times)
     play.play.meta_info = fragment
         .select(&METAINFO_SELECTOR)
-        .fold("".to_string(), |acc, element| {
-            format!("{}\n{}", acc, element.inner_html())
-        });
+        .filter_map(|element| {
+            let mut text = element.inner_html();
+            match text.split_once("</span>") {
+                Some((_, t)) => text = t.to_string(),
+                None => (),
+            }
+            text = text.trim().to_string();
+            if text == "" {
+                None
+            } else {
+                Some(text)
+            }
+        })
+        .collect::<Vec<String>>()
+        .join("\n");
 
     let mut collect_screening = |production_row: ElementRef| -> Result<Screening> {
         // Search for `a.calendar-icon` in the production row
-        let selector = Selector::parse("a.calendar-icon").unwrap();
+        let selector = Selector::parse("div.activity-ticket__calendar a").unwrap();
         // Extract the calendar event link
         let calendar_link = production_row
             .select(&selector)
@@ -121,12 +211,10 @@ pub fn get_play<'a>(url: &str) -> Result<PlayWithScreenings, Box<dyn Error>> {
             match (line.name.as_str(), line.value) {
                 ("UID", Some(i)) => id = Some(i),
                 ("DTSTART", Some(d)) => start = parse_time(d),
-                ("DESCRIPTION", Some(d)) => play.play.description = d,
-                ("SUMMARY", Some(s)) => play.play.name = s,
                 (_, _) => continue,
             }
         }
-        let mut screening: Screening;
+        let screening: Screening;
         match (id, start) {
             (Some(i), Some(s)) => {
                 screening = Screening {
@@ -147,20 +235,6 @@ pub fn get_play<'a>(url: &str) -> Result<PlayWithScreenings, Box<dyn Error>> {
                 ));
             }
         }
-        // search for div.activity-snippet__date in the production row to extract the location of the screening from the
-        // location string e.g. Di 03.10. 18:30 Schiffbau
-        let selector = Selector::parse("div.activity-snippet__date").unwrap();
-        let screening_info = production_row
-            .select(&selector)
-            .next()
-            .context("No screening info found for element")?
-            .inner_html();
-        let re = Regex::new(r"\d{2}:\d{2}\s(.*)").unwrap();
-        if let Some(captured) = re.captures(&screening_info) {
-            if let Some(m) = captured.get(1) {
-                screening.location = m.as_str().to_string();
-            }
-        }
         Ok(screening)
     };
 
@@ -174,7 +248,7 @@ pub fn get_play<'a>(url: &str) -> Result<PlayWithScreenings, Box<dyn Error>> {
     }
 
     // Get Production image
-    let selector = Selector::parse("img.production__heroimage").unwrap();
+    let selector = Selector::parse("div.article__hero img").unwrap();
     for element in fragment.select(&selector) {
         play.play.image_url = match element.value().attr("data-src") {
             Some(url) => url.to_string(),
@@ -188,6 +262,11 @@ pub fn get_play<'a>(url: &str) -> Result<PlayWithScreenings, Box<dyn Error>> {
 
     // Find Location
     Ok(play)
+}
+
+pub fn get_play<'a>(url: &str) -> Result<PlayWithScreenings, Box<dyn Error>> {
+    let play_page_content = reqwest::blocking::get(format!("{}{}", BASE_URL, url))?.text()?;
+    find_play_with_screenings(url, &play_page_content)
 }
 
 fn parse_time(d: String) -> Option<OffsetDateTime> {
@@ -217,6 +296,12 @@ fn test_screenings_selector() {
             path
         );
     }
+}
+
+#[test]
+fn test_get_plays() {
+    let plays = get_plays().unwrap();
+    assert_eq!(plays.len(), 10);
 }
 
 #[test]

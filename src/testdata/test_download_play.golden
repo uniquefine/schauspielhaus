@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">
+<head>
+   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+   	<title>Peiden - Schauspielhaus Zürich</title>
+	<meta name="Description" content="" />
+	<meta name="DC.DESCRIPTION" content="" />
+
+   <link rel="stylesheet" type="text/css" media="all" href="/styles/truncateit.css" />
+   <link rel="stylesheet" type="text/css" media="all" href="/styles/cbplayer.css" />
+   <link rel="stylesheet" type="text/css" media="all" href="/styles/cblightbox.css" />
+   <link rel="stylesheet" type="text/css" media="all" href="/styles/splide-core.min.css" />
+   <link rel="stylesheet" type="text/css" media="all"
+      href="/styles/main.css?v=20240909145408" />
+   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+   <link rel="manifest" href="/site.webmanifest">
+   <meta name="msapplication-TileColor" content="#da532c">
+   <meta name="theme-color" content="#ffffff">
+         <meta property="og:url" content="https://www.schauspielhaus.ch/de/kalender/30781/peiden" />
+      <meta property="og:type" content="article" />
+      <meta property="og:title" content="Peiden - Schauspielhaus Zürich" />
+      <meta name="twitter:card" content="summary_large_image">
+      <meta name="twitter:site" content="@shzrh">
+      <meta name="twitter:title" content="Peiden - Schauspielhaus Zürich" />
+         </head>
+<body>
+
+   
+
+   <header class="header">
+   <div class="header__inner">
+
+      <div class="header__left">
+         <div class="header__menu header__menu--desktop js-menu-open">
+            Menu
+         </div>
+
+         <div class="header__menu header__menu--mobile js-menu-open"></div>
+
+         <button class="header-search-button js-search-open"></button>
+      </div>
+   
+      <a href="https://www.schauspielhaus.ch/de/" class="header__logo">
+         Schauspielhaus<br>
+         Zürich
+      </a>
+
+      <div class="header__right">
+         <a href="/de/kalender/" class="header__calendar">
+            <span>15</span>
+         </a>
+
+                  <a href="/en/kalender/30781/peiden" class="header__lang">
+            EN
+         </a>
+      </div>
+   </div>
+</header>
+
+<div class="header-search">
+
+   <div class="menu-content__top">
+      <div class="menu-close js-search-close"></div>
+   </div>
+
+   <div class="header-search-content">
+      <div class="header-search-title">
+         Suche
+      </div>
+
+      <form action="/de/suche" method="get" class="header-search-form">
+         <input type="text" name="q" class="header-search-form__input" placeholder="Suche" />
+      </form>
+   </div>
+</div>
+
+<div class="menu">
+   <div class="menu-content">
+      <div class="menu-content__scroll">
+         <div class="menu-content__top">
+            <div class="menu-close js-menu-close"></div>
+         </div>
+
+         <ul class="menu-content__items">
+                           <li class="menu-item">
+                  <div class="menu-item__button js-toggle-submenu">
+                     <div class="menu-item__label">
+                        Programm 
+                        
+                        <span class="menu-item__arrow"></span>
+                     </div>
+                  </div>
+
+                  <div class="submenu-items">
+                     <ul>
+                                             <li>
+                           <a href="/de/kalender" class="submenu-item">
+                              Spielplan
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/31567/premieren-24-25" class="submenu-item">
+                              Premieren
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/31631/fuer-junges-publikum" class="submenu-item">
+                              Für junges Publikum
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/31594/stuecke-a-z" class="submenu-item">
+                              Stücke A-Z
+                           </a>
+                        </li>
+                                          </ul>
+
+                                       </div>
+               </li>
+                           <li class="menu-item">
+                  <div class="menu-item__button js-toggle-submenu">
+                     <div class="menu-item__label">
+                        Karten & Abos 
+                        
+                        <span class="menu-item__arrow"></span>
+                     </div>
+                  </div>
+
+                  <div class="submenu-items">
+                     <ul>
+                                             <li>
+                           <a href="/de/31599/karten-verkauf" class="submenu-item">
+                              Karten & Verkauf
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/30537/sitzplaene-preise-24-25" class="submenu-item">
+                              Sitzpläne & Preise
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/abos" class="submenu-item">
+                              Abos
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/31615/geschenkgutschein" class="submenu-item">
+                              Geschenkgutschein
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/31617/angebote-fuer-schulklassen-lehrpersonen" class="submenu-item">
+                              Angebote für Schulklassen & Lehrpersonen
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/31633/allgemeine-geschaeftsbedingungen" class="submenu-item">
+                              AGB
+                           </a>
+                        </li>
+                                          </ul>
+
+                                       </div>
+               </li>
+                           <li class="menu-item">
+                  <div class="menu-item__button js-toggle-submenu">
+                     <div class="menu-item__label">
+                        Schauspielhaus 
+                        
+                        <span class="menu-item__arrow"></span>
+                     </div>
+                  </div>
+
+                  <div class="submenu-items">
+                     <ul>
+                                             <li>
+                           <a href="/de/27336/ber-uns" class="submenu-item">
+                              Über uns
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/ensemble" class="submenu-item">
+                              Ensemble
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/31620/mitarbeiter-innen-24-25" class="submenu-item">
+                              Mitarbeiter*innen
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/1045/spielstaetten" class="submenu-item">
+                              Spielstätten
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/30280/unterstuetzen-24-25" class="submenu-item">
+                              Sponsoring & Fundraising
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/30282/danke" class="submenu-item">
+                              Danke!
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/1172/gesellschaft-der-freunde-des-schauspielhauses" class="submenu-item">
+                              Gesellschaft der Freunde
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/27334/nachhaltigkeit" class="submenu-item">
+                              Nachhaltigkeit & Diversität
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/1397/geschichte" class="submenu-item">
+                              Geschichte
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/1425/verwaltungsrat" class="submenu-item">
+                              Verwaltungsrat
+                           </a>
+                        </li>
+                                          </ul>
+
+                                       </div>
+               </li>
+                           <li class="menu-item">
+                  <div class="menu-item__button js-toggle-submenu">
+                     <div class="menu-item__label">
+                        Mitmachen 
+                        
+                        <span class="menu-item__arrow"></span>
+                     </div>
+                  </div>
+
+                  <div class="submenu-items">
+                     <ul>
+                                             <li>
+                           <a href="/de/30278/mitmachen-24-25" class="submenu-item">
+                              Dabei sein & aktiv gestalten
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/30528/theater-schule-24-25" class="submenu-item">
+                              Theater & Schule
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/31635/jugendclubs-24-25" class="submenu-item">
+                              Jugendclubs
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/31637/doppelspiel-24-25" class="submenu-item">
+                              Doppelspiel
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/31639/schau-und-spiel-24-25" class="submenu-item">
+                              Schau und Spiel
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/31641/theaterjahr-24-25" class="submenu-item">
+                              Theaterjahr
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/31643/enterspaces-24-25" class="submenu-item">
+                              Enterspaces
+                           </a>
+                        </li>
+                                          </ul>
+
+                                       </div>
+               </li>
+                           <li class="menu-item">
+                  <div class="menu-item__button js-toggle-submenu">
+                     <div class="menu-item__label">
+                        Service 
+                        
+                        <span class="menu-item__arrow"></span>
+                     </div>
+                  </div>
+
+                  <div class="submenu-items">
+                     <ul>
+                                             <li>
+                           <a href="/de/358/kontakt" class="submenu-item">
+                              Kontakt
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/1153/presse" class="submenu-item">
+                              Presse
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/31622/theaterbesuch" class="submenu-item">
+                              Ihr Theaterbesuch
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/31928/webshop" class="submenu-item">
+                              Shop
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/1055/zugaenglichkeit" class="submenu-item">
+                              Zugänglichkeit
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/24453/glossar" class="submenu-item">
+                              Diversitätsglossar
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/24357/triggerwarnungen" class="submenu-item">
+                              Triggerhinweise
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/30274/internationales-publikum" class="submenu-item">
+                              Internationales Publikum
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/28123/vermietungen-events" class="submenu-item">
+                              Vermietungen & Events
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/1393/technik" class="submenu-item">
+                              Technik
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/newsletter" class="submenu-item">
+                              Newsletter
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/28745/feedback-formular" class="submenu-item">
+                              Feedback
+                           </a>
+                        </li>
+                                             <li>
+                           <a href="/de/23/j-obs" class="submenu-item">
+                              Jobs
+                           </a>
+                        </li>
+                                          </ul>
+
+                                             <div class="submenu-follow">
+                           <div class="submenu-follow__text">
+                              Folgen Sie uns auf:
+                           </div>
+
+                           <ul class="socialmedia-items socialmedia-items--menu">
+   <li>
+      <a href="https://www.instagram.com/schauspielhaus.ch/">
+         <img src="/elements/icon_socialmedia_instagram.svg" alt="instagram">
+      </a>
+   </li>
+   <li>
+      <a href="https://soundcloud.com/schauspielhauszuerich24">
+         <img src="/elements/icon_socialmedia_soundcloud.svg" alt="soundcloud">
+      </a>
+   </li>
+   <li>
+      <a href="https://x.com/Zschauspielhaus">
+         <img src="/elements/icon_socialmedia_x.svg" alt="x">
+      </a>
+   </li>
+   <li>
+      <a href="https://www.facebook.com/schauspielhaus.ch">
+         <img src="/elements/icon_socialmedia_facebook.svg" alt="facebook">
+      </a>
+   </li>
+   <li>
+      <a href="https://www.linkedin.com/company/693523/admin/dashboard/">
+         <img src="/elements/icon_socialmedia_linkedin.svg" alt="linkedin">
+      </a>
+   </li>
+   <li>
+      <a href="https://www.tiktok.com/@schauspielhaus.ch">
+         <img src="/elements/icon_socialmedia_tiktok.svg" alt="tiktok">
+      </a>
+   </li>
+<ul>                        </div>
+                                       </div>
+               </li>
+                     
+         </ul>
+      </div>
+
+      <div class="menu-content__shadow"></div>
+   </div>
+
+   <div class="menu-bottom">
+      <div class="menu-bottom__text">
+            Wir danken unseren Partner*innen:
+      </div>
+
+      <div class="menu-bottom__logos">
+         <div class="menu-bottom__logo">
+            <a href="https://www.stadt-zuerich.ch/prd/de/index/kultur.html">
+               <img class="footer__supporter-logo" src="/elements/Zurich_Kultur_Weiss.svg"
+                  alt="Logo Kultur Stadt Zürich">
+            </a>
+         </div>
+
+         <div class="menu-bottom__logo">
+            <a href="https://www.migros-engagement.ch/de/kulturprozent"> <img class="footer__supporter-logo"
+                  src="/elements/Migros_Weiss.svg" alt="Logo Migros Kulturprozent">
+            </a>
+         </div>
+
+         <div class="menu-bottom__logo">
+            <a href="https://www.zkb.ch/de/ueber-uns/unser-engagement/kultur-szene/schauspielhaus-zuerich.html">
+               <img class="footer__supporter-logo" src="/elements/ZKB_Weiss.svg"
+                  alt="Logo Zürcher Kantonalbank">
+            </a>
+         </div>
+      </div>
+   </div>
+</div>
+   <main class="main">
+      <article class="article">
+                     <div class="article__hero">
+               <img class="js-lazyload lazyload-image" data-src="/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=1600" data-srcset="/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=100 100w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=200 200w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=300 300w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=400 400w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=500 500w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=640 640w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=750 750w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=828 828w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=1024 1024w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=1125 1125w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=1242 1242w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=1280 1280w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=1400 1400w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=1500 1500w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=1600 1600w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=1700 1700w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=1800 1800w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=1920 1920w" data-sizes="auto" alt="" src="">
+            </div>
+         
+         <div class="article__jumplinks">
+            <ul>
+                                 <li>
+                     <span class="article-jumplink js-article-jumplink" data-section="activities">Termine
+                  </li>
+                  </li>
+                                                <li>
+                     <span class="article-jumplink js-article-jumplink" data-section="team">Besetzung und Team
+                  </li>
+                  </li>
+                                                <li>
+                     <span class="article-jumplink js-article-jumplink" data-section="gallery">Galerie
+                  </li>
+                  </li>
+                                                         </ul>
+         </div>
+
+         <h1 class="article__title">
+            Peiden
+         </h1>
+
+                     <h2 class="article__subtitle">
+               <p>Ein Abend von und mit Bruno Cathomas<br />
+Übernahme vom Theater Chur<br />
+Regie: Rafael Sanchez</p>
+
+            </h2>
+         
+         <div class="article-content">
+            <div class="article-content__infos">
+               
+                  <div class="article-content__info article-content__info--with-icon">
+                                                                        <span class="article-content__info-icon">
+                              <img src="/images/Gruppe_2340.svg?w=500" alt="" />
+                           </span>
+                                                Pfauen
+                                       </div>
+               
+                                 <div class="article-content__info">
+                     80 Minuten, ohne Pause
+                  </div>
+               
+                                 <div class="article-content__info">
+                     Zürich-Premiere: September 2024
+                  </div>
+                           </div>
+
+            <div class="article-content__text formattext">
+               <div class="js-truncateit" data-labelopen="Mehr anzeigen" data-labelclose="Weniger anzeigen">
+                  <p>PEIDEN ist ein sehr persönliches und vielschichtiges Theaterprojekt des Schweizer Schauspielers Bruno Cathomas auf Schweizerdeutsch, Hochdeutsch und Rätoromanisch, welches im Oktober 2022 am Theater Chur Premiere feierte. Es entstand in Zusammenarbeit mit Rafael Sanchez, dem designierten Zürcher Co-Intendanten ab 2025. In unserer&nbsp;Interimsspielzeit 2024/25 gibt er mit der Übernahme dieser Inszenierung einen Vorgeschmack seiner Arbeit als Regisseur am Schauspielhaus.</p>
+
+<p>PEIDEN erzählt von einem Dorf am sonnigen Hang in den Bergen, davon, wie es zweimal niederbrannte und zweimal aufgebaut wurde, den Hang runterrutschte und verlassen wurde, bis selbst der Friedhof sich leerte. Und es erzählt vom Schauspieler Bruno Cathomas, dessen Vorfahren das Kurhotel Peiden-Bad führten, und davon, wie er eines Morgens mit einem Brandmal aufwachte, wie er als Zwölfjähriger acht Stunden an einen Baum gefesselt wurde, wieso der Dorfpolizist schuld ist, dass er eine Schlosserlehre bei Blocher absolvieren musste, und weshalb er nun so geworden ist, wie er ist: bewundert auf den deutschen Bühnen für seine masslose Darstellung, weil er seine Figuren und sich selbst immer an den Rand des Möglichen führt, und gefürchtet in der Heimat, weil er kein Blatt vor den Mund nimmt. Da hört man schon mal die Klage, wieso er immer so ein Grober sein müsse. Dieser Bruno trifft auf einen anderen Bruno, einen, der sein Dorf nie verlassen hat und von den Erinnerungen an seine Ahnen lebt. Wie dieses Leben verlaufen wäre, weiss schliesslich nur die heilige Mutter Gottes, die in den Glenner geworfen wurde. Eins jedoch ist gewiss: Für zwei Brunos ist die Welt zu klein.</p>
+
+               </div>
+            </div>
+         </div>
+
+                     <section class="article-section" data-section="activities">
+               <h3 class="article-section__title">
+                  Termine
+               </h3>
+
+               <div class="article-events">
+                                       <div class="article-event">
+
+                        <div class="article-event__date">
+                           <div class="article-event__date-weekday">
+                                                               Fr
+                                                         </div>
+                           <div class="article-event__date-date">
+                              27.9.24
+                           </div>
+                           <div class="article-event__date-time" aria-label="20:00 - 21:20">
+                              <span aria-hidden="true">
+                                 20.00&thinsp;-&thinsp;21.20
+                              </span>
+                           </div>
+                        </div>
+
+                        <div class="article-event__info">
+
+                                                         <div class="article-event__info-attributes">
+                                          <span class="calendar-item-attribute"><span class="calendar-item__info-icon"></span> Zürich-Premiere</span>
+   
+   
+                              </div>
+                           
+                           
+                           
+                                                         <span class="article-event__info-lang">auf Schweizerdeutsch, Hochdeutsch, Rätoromanisch, mit Deutschen Übertiteln</span>
+                                                   </div>
+
+                        <div class="article-event__tickes">
+                           
+
+<div class="activity-ticket-wrap">
+         <a class="activity-ticket__button" href="https://www.zurichticket.ch/shz.webshop/webticket/shop?event=11531&amp;language=de">Tickets</a>
+   
+   <div class="activity-ticket__calendar">
+      <a href="/de/kalender/30781/peiden/31444.ics">27</a>
+   </div>
+</div>                        </div>
+                     </div>
+                                       <div class="article-event">
+
+                        <div class="article-event__date">
+                           <div class="article-event__date-weekday">
+                                                               Sa
+                                                         </div>
+                           <div class="article-event__date-date">
+                              28.9.24
+                           </div>
+                           <div class="article-event__date-time" aria-label="20:00 - 21:20">
+                              <span aria-hidden="true">
+                                 20.00&thinsp;-&thinsp;21.20
+                              </span>
+                           </div>
+                        </div>
+
+                        <div class="article-event__info">
+
+                           
+                           
+                           
+                                                         <span class="article-event__info-lang">auf Schweizerdeutsch, Hochdeutsch, Rätoromanisch, mit Deutschen Übertiteln</span>
+                                                   </div>
+
+                        <div class="article-event__tickes">
+                           
+
+<div class="activity-ticket-wrap">
+         <a class="activity-ticket__button" href="https://www.zurichticket.ch/shz.webshop/webticket/shop?event=11532&amp;language=de">Tickets</a>
+   
+   <div class="activity-ticket__calendar">
+      <a href="/de/kalender/30781/peiden/31445.ics">28</a>
+   </div>
+</div>                        </div>
+                     </div>
+                                       <div class="article-event">
+
+                        <div class="article-event__date">
+                           <div class="article-event__date-weekday">
+                                                               So
+                                                         </div>
+                           <div class="article-event__date-date">
+                              6.10.24
+                           </div>
+                           <div class="article-event__date-time" aria-label="16:00 - 17:20">
+                              <span aria-hidden="true">
+                                 16.00&thinsp;-&thinsp;17.20
+                              </span>
+                           </div>
+                        </div>
+
+                        <div class="article-event__info">
+
+                           
+                                                         <p>im Anschluss Publikumsgespräch</p>
+                           
+                           
+                                                         <span class="article-event__info-lang">auf Schweizerdeutsch, Hochdeutsch, Rätoromanisch, mit Deutschen Übertiteln</span>
+                                                   </div>
+
+                        <div class="article-event__tickes">
+                           
+
+<div class="activity-ticket-wrap">
+         <a class="activity-ticket__button" href="https://www.zurichticket.ch/shz.webshop/webticket/shop?event=11619&amp;language=de">Tickets</a>
+   
+   <div class="activity-ticket__calendar">
+      <a href="/de/kalender/30781/peiden/31786.ics">06</a>
+   </div>
+</div>                        </div>
+                     </div>
+                                       <div class="article-event">
+
+                        <div class="article-event__date">
+                           <div class="article-event__date-weekday">
+                                                               So
+                                                         </div>
+                           <div class="article-event__date-date">
+                              3.11.24
+                           </div>
+                           <div class="article-event__date-time" aria-label="17:00 - 18:20">
+                              <span aria-hidden="true">
+                                 17.00&thinsp;-&thinsp;18.20
+                              </span>
+                           </div>
+                        </div>
+
+                        <div class="article-event__info">
+
+                           
+                           
+                           
+                                                         <span class="article-event__info-lang">auf Schweizerdeutsch, Hochdeutsch, Rätoromanisch, mit Deutschen Übertiteln</span>
+                                                   </div>
+
+                        <div class="article-event__tickes">
+                           
+
+<div class="activity-ticket-wrap">
+         <a class="activity-ticket__button" href="https://www.zurichticket.ch/shz.webshop/webticket/shop?event=11620&amp;language=de">Tickets</a>
+   
+   <div class="activity-ticket__calendar">
+      <a href="/de/kalender/30781/peiden/31820.ics">03</a>
+   </div>
+</div>                        </div>
+                     </div>
+                                 </div>
+
+               
+            </section>
+         
+                     <section class="article-section" data-section="team">
+               <h3 class="article-section__title">
+                  Besetzung und Team
+               </h3>
+
+               
+                                 <div class="article-directors">
+                     <div class="article-directors__inner">
+                                                   <div class="directors-group">
+   <div class="directors-group__columns">
+      <div class="directors-group__column">
+         Von und mit
+      </div>
+      <div class="directors-group__column directors-group__column--right">
+         <span>Bruno&nbsp;Cathomas</span>      </div>
+   </div>
+</div>                                                   <div class="directors-group">
+   <div class="directors-group__columns">
+      <div class="directors-group__column">
+         Regie
+      </div>
+      <div class="directors-group__column directors-group__column--right">
+         <span>Rafael&nbsp;Sanchez</span>      </div>
+   </div>
+</div>                                                   <div class="directors-group">
+   <div class="directors-group__columns">
+      <div class="directors-group__column">
+         Autoren
+      </div>
+      <div class="directors-group__column directors-group__column--right">
+         <span>Rafael&nbsp;Sanchez</span> <br> <span>Roman&nbsp;Weishaupt</span>      </div>
+   </div>
+</div>                                                   <div class="directors-group">
+   <div class="directors-group__columns">
+      <div class="directors-group__column">
+         Dramaturgie
+      </div>
+      <div class="directors-group__column directors-group__column--right">
+         <span>Martina&nbsp;Mutzner</span>      </div>
+   </div>
+</div>                                                   <div class="directors-group">
+   <div class="directors-group__columns">
+      <div class="directors-group__column">
+         Oeil extérieur
+      </div>
+      <div class="directors-group__column directors-group__column--right">
+         <span>Mariano&nbsp;Tschuor</span>      </div>
+   </div>
+</div>                                                   <div class="directors-group">
+   <div class="directors-group__columns">
+      <div class="directors-group__column">
+         Bühnenbild
+      </div>
+      <div class="directors-group__column directors-group__column--right">
+         <span>Duri&nbsp;Bischoff</span>      </div>
+   </div>
+</div>                                                   <div class="directors-group">
+   <div class="directors-group__columns">
+      <div class="directors-group__column">
+         Kostümbild
+      </div>
+      <div class="directors-group__column directors-group__column--right">
+         <span>Dominique&nbsp;Steinegger</span>      </div>
+   </div>
+</div>                                                   <div class="directors-group">
+   <div class="directors-group__columns">
+      <div class="directors-group__column">
+         Video
+      </div>
+      <div class="directors-group__column directors-group__column--right">
+         <span>Robin&nbsp;Nidecker</span>      </div>
+   </div>
+</div>                                                   <div class="directors-group">
+   <div class="directors-group__columns">
+      <div class="directors-group__column">
+         Licht
+      </div>
+      <div class="directors-group__column directors-group__column--right">
+         <span>Carlos&nbsp;Marquerie</span>      </div>
+   </div>
+</div>                                                   <div class="directors-group">
+   <div class="directors-group__columns">
+      <div class="directors-group__column">
+         Regieassistenzen
+      </div>
+      <div class="directors-group__column directors-group__column--right">
+         <span>Alvise&nbsp;Lindenberger</span> <br> <span>Flurin&nbsp;Schütz</span>      </div>
+   </div>
+</div>                                                   <div class="directors-group">
+   <div class="directors-group__columns">
+      <div class="directors-group__column">
+         Technik
+      </div>
+      <div class="directors-group__column directors-group__column--right">
+         <span>Michael&nbsp;Frigerio</span> <br> <span>Hannes&nbsp;Fopp</span> <br> <span>Celine&nbsp;Keller</span> <br> <span>Saskia&nbsp;van de Wal</span>      </div>
+   </div>
+</div>                                                   <div class="directors-group">
+   <div class="directors-group__columns">
+      <div class="directors-group__column">
+         Produktionsleitung
+      </div>
+      <div class="directors-group__column directors-group__column--right">
+         <span>Hannes&nbsp;Fister</span>      </div>
+   </div>
+</div>                                                   <div class="directors-group">
+   <div class="directors-group__columns">
+      <div class="directors-group__column">
+         Produktionsassistenz
+      </div>
+      <div class="directors-group__column directors-group__column--right">
+         <span>Laurin&nbsp;Bieler</span>      </div>
+   </div>
+</div>                                                   <div class="directors-group">
+   <div class="directors-group__columns">
+      <div class="directors-group__column">
+         Übertitel
+      </div>
+      <div class="directors-group__column directors-group__column--right">
+         <span>Flurin&nbsp;Schütz</span> <br> <span>Martina&nbsp;Mutzner</span>      </div>
+   </div>
+</div>                                                   <div class="directors-group">
+   <div class="directors-group__columns">
+      <div class="directors-group__column">
+         Fotos
+      </div>
+      <div class="directors-group__column directors-group__column--right">
+         <span>Flurin&nbsp;Schütz</span> <br> <span>Theater&nbsp;Chur</span> <br> <span>Foto&nbsp;Gross</span> <br> <span>Yanik&nbsp;Bürkli</span>      </div>
+   </div>
+</div>                                             </div>
+
+                                       </div>
+               
+            </section>
+         
+         <section class="article-section article-section--blocks">
+            <div class="article-blocks">
+
+               
+               
+                                 <div class="article-block article-block--text">
+                     <div class="block-text formattext">
+                        <p>Sprache: Schweizerdeutsch, Hochdeutsch, Rätoromanisch (Sursilvan), mit Deutschen Übertiteln</p>
+
+<p>Mit freundlicher Unterstützung durch: Boner Stiftung für Kunst und Kultur, Wilhelm Doerenkamp-Stiftung, Stiftung Fürstl. Kommerzienrat Guido Feger, Fundaziun agid social e cultural, Graubündner Kantonalbank, Linsi Foundation, Vischnaunca Lumnezia, Ernst Göhner Stiftung, LANDIS &amp; GYR STIFTUNG, Stiftung Lienhard-Hunger, Stiftung Stavros S. Niarchos, Pro Laax, Stiftung Dr. Valentin Malamoud, Pro Helvetia</p>
+
+                     </div>
+                  </div>
+                           </div>
+         </section>
+
+                     <section class="article-section article-section--gallery" data-section="gallery">
+         <h3 class="article-section__title">
+         Galerie
+      </h3>
+   
+   <div class="article-slideshow">
+      <div class="article-slideshow-slides js-slideshow">
+                     <div class="article-slideshow-slide">
+               <div class="article-slideshow-slide__image">
+                  <img class="js-lazyload lazyload-image" data-src="/images/Peiden_Theater_Chur_2022_Low_Res_07.jpg?w=1600" data-srcset="/images/Peiden_Theater_Chur_2022_Low_Res_07.jpg?w=100 100w,/images/Peiden_Theater_Chur_2022_Low_Res_07.jpg?w=200 200w,/images/Peiden_Theater_Chur_2022_Low_Res_07.jpg?w=300 300w,/images/Peiden_Theater_Chur_2022_Low_Res_07.jpg?w=400 400w,/images/Peiden_Theater_Chur_2022_Low_Res_07.jpg?w=500 500w,/images/Peiden_Theater_Chur_2022_Low_Res_07.jpg?w=640 640w,/images/Peiden_Theater_Chur_2022_Low_Res_07.jpg?w=750 750w,/images/Peiden_Theater_Chur_2022_Low_Res_07.jpg?w=828 828w,/images/Peiden_Theater_Chur_2022_Low_Res_07.jpg?w=1024 1024w,/images/Peiden_Theater_Chur_2022_Low_Res_07.jpg?w=1125 1125w,/images/Peiden_Theater_Chur_2022_Low_Res_07.jpg?w=1242 1242w,/images/Peiden_Theater_Chur_2022_Low_Res_07.jpg?w=1280 1280w,/images/Peiden_Theater_Chur_2022_Low_Res_07.jpg?w=1400 1400w,/images/Peiden_Theater_Chur_2022_Low_Res_07.jpg?w=1500 1500w,/images/Peiden_Theater_Chur_2022_Low_Res_07.jpg?w=1600 1600w,/images/Peiden_Theater_Chur_2022_Low_Res_07.jpg?w=1700 1700w,/images/Peiden_Theater_Chur_2022_Low_Res_07.jpg?w=1800 1800w,/images/Peiden_Theater_Chur_2022_Low_Res_07.jpg?w=1920 1920w" data-sizes="auto" alt="" src="">
+               </div>
+
+                                 <div class="article-slideshow-slide__caption">
+                     <p>© Theater Chur, Yanik Bürkli</p>
+
+                  </div>
+                           </div>
+                     <div class="article-slideshow-slide">
+               <div class="article-slideshow-slide__image">
+                  <img class="js-lazyload lazyload-image" data-src="/images/Peiden_Theater_Chur_2022_Low_Res_09.jpg?w=1600" data-srcset="/images/Peiden_Theater_Chur_2022_Low_Res_09.jpg?w=100 100w,/images/Peiden_Theater_Chur_2022_Low_Res_09.jpg?w=200 200w,/images/Peiden_Theater_Chur_2022_Low_Res_09.jpg?w=300 300w,/images/Peiden_Theater_Chur_2022_Low_Res_09.jpg?w=400 400w,/images/Peiden_Theater_Chur_2022_Low_Res_09.jpg?w=500 500w,/images/Peiden_Theater_Chur_2022_Low_Res_09.jpg?w=640 640w,/images/Peiden_Theater_Chur_2022_Low_Res_09.jpg?w=750 750w,/images/Peiden_Theater_Chur_2022_Low_Res_09.jpg?w=828 828w,/images/Peiden_Theater_Chur_2022_Low_Res_09.jpg?w=1024 1024w,/images/Peiden_Theater_Chur_2022_Low_Res_09.jpg?w=1125 1125w,/images/Peiden_Theater_Chur_2022_Low_Res_09.jpg?w=1242 1242w,/images/Peiden_Theater_Chur_2022_Low_Res_09.jpg?w=1280 1280w,/images/Peiden_Theater_Chur_2022_Low_Res_09.jpg?w=1400 1400w,/images/Peiden_Theater_Chur_2022_Low_Res_09.jpg?w=1500 1500w,/images/Peiden_Theater_Chur_2022_Low_Res_09.jpg?w=1600 1600w,/images/Peiden_Theater_Chur_2022_Low_Res_09.jpg?w=1700 1700w,/images/Peiden_Theater_Chur_2022_Low_Res_09.jpg?w=1800 1800w,/images/Peiden_Theater_Chur_2022_Low_Res_09.jpg?w=1920 1920w" data-sizes="auto" alt="" src="">
+               </div>
+
+                                 <div class="article-slideshow-slide__caption">
+                     <p>© Theater Chur, Yanik Bürkli</p>
+
+                  </div>
+                           </div>
+                     <div class="article-slideshow-slide">
+               <div class="article-slideshow-slide__image">
+                  <img class="js-lazyload lazyload-image" data-src="/images/Peiden_Theater_Chur_2022_Low_Res_16.jpg?w=1600" data-srcset="/images/Peiden_Theater_Chur_2022_Low_Res_16.jpg?w=100 100w,/images/Peiden_Theater_Chur_2022_Low_Res_16.jpg?w=200 200w,/images/Peiden_Theater_Chur_2022_Low_Res_16.jpg?w=300 300w,/images/Peiden_Theater_Chur_2022_Low_Res_16.jpg?w=400 400w,/images/Peiden_Theater_Chur_2022_Low_Res_16.jpg?w=500 500w,/images/Peiden_Theater_Chur_2022_Low_Res_16.jpg?w=640 640w,/images/Peiden_Theater_Chur_2022_Low_Res_16.jpg?w=750 750w,/images/Peiden_Theater_Chur_2022_Low_Res_16.jpg?w=828 828w,/images/Peiden_Theater_Chur_2022_Low_Res_16.jpg?w=1024 1024w,/images/Peiden_Theater_Chur_2022_Low_Res_16.jpg?w=1125 1125w,/images/Peiden_Theater_Chur_2022_Low_Res_16.jpg?w=1242 1242w,/images/Peiden_Theater_Chur_2022_Low_Res_16.jpg?w=1280 1280w,/images/Peiden_Theater_Chur_2022_Low_Res_16.jpg?w=1400 1400w,/images/Peiden_Theater_Chur_2022_Low_Res_16.jpg?w=1500 1500w,/images/Peiden_Theater_Chur_2022_Low_Res_16.jpg?w=1600 1600w,/images/Peiden_Theater_Chur_2022_Low_Res_16.jpg?w=1700 1700w,/images/Peiden_Theater_Chur_2022_Low_Res_16.jpg?w=1800 1800w,/images/Peiden_Theater_Chur_2022_Low_Res_16.jpg?w=1920 1920w" data-sizes="auto" alt="" src="">
+               </div>
+
+                                 <div class="article-slideshow-slide__caption">
+                     <p>© Theater Chur, Yanik Bürkli</p>
+
+                  </div>
+                           </div>
+                     <div class="article-slideshow-slide">
+               <div class="article-slideshow-slide__image">
+                  <img class="js-lazyload lazyload-image" data-src="/images/Peiden_Theater_Chur_2022_Low_Res_23.jpg?w=1600" data-srcset="/images/Peiden_Theater_Chur_2022_Low_Res_23.jpg?w=100 100w,/images/Peiden_Theater_Chur_2022_Low_Res_23.jpg?w=200 200w,/images/Peiden_Theater_Chur_2022_Low_Res_23.jpg?w=300 300w,/images/Peiden_Theater_Chur_2022_Low_Res_23.jpg?w=400 400w,/images/Peiden_Theater_Chur_2022_Low_Res_23.jpg?w=500 500w,/images/Peiden_Theater_Chur_2022_Low_Res_23.jpg?w=640 640w,/images/Peiden_Theater_Chur_2022_Low_Res_23.jpg?w=750 750w,/images/Peiden_Theater_Chur_2022_Low_Res_23.jpg?w=828 828w,/images/Peiden_Theater_Chur_2022_Low_Res_23.jpg?w=1024 1024w,/images/Peiden_Theater_Chur_2022_Low_Res_23.jpg?w=1125 1125w,/images/Peiden_Theater_Chur_2022_Low_Res_23.jpg?w=1242 1242w,/images/Peiden_Theater_Chur_2022_Low_Res_23.jpg?w=1280 1280w,/images/Peiden_Theater_Chur_2022_Low_Res_23.jpg?w=1400 1400w,/images/Peiden_Theater_Chur_2022_Low_Res_23.jpg?w=1500 1500w,/images/Peiden_Theater_Chur_2022_Low_Res_23.jpg?w=1600 1600w,/images/Peiden_Theater_Chur_2022_Low_Res_23.jpg?w=1700 1700w,/images/Peiden_Theater_Chur_2022_Low_Res_23.jpg?w=1800 1800w,/images/Peiden_Theater_Chur_2022_Low_Res_23.jpg?w=1920 1920w" data-sizes="auto" alt="" src="">
+               </div>
+
+                                 <div class="article-slideshow-slide__caption">
+                     <p>© Theater Chur, Yanik Bürkli</p>
+
+                  </div>
+                           </div>
+                     <div class="article-slideshow-slide">
+               <div class="article-slideshow-slide__image">
+                  <img class="js-lazyload lazyload-image" data-src="/images/Peiden_Theater_Chur_2022_Low_Res_25.jpg?w=1600" data-srcset="/images/Peiden_Theater_Chur_2022_Low_Res_25.jpg?w=100 100w,/images/Peiden_Theater_Chur_2022_Low_Res_25.jpg?w=200 200w,/images/Peiden_Theater_Chur_2022_Low_Res_25.jpg?w=300 300w,/images/Peiden_Theater_Chur_2022_Low_Res_25.jpg?w=400 400w,/images/Peiden_Theater_Chur_2022_Low_Res_25.jpg?w=500 500w,/images/Peiden_Theater_Chur_2022_Low_Res_25.jpg?w=640 640w,/images/Peiden_Theater_Chur_2022_Low_Res_25.jpg?w=750 750w,/images/Peiden_Theater_Chur_2022_Low_Res_25.jpg?w=828 828w,/images/Peiden_Theater_Chur_2022_Low_Res_25.jpg?w=1024 1024w,/images/Peiden_Theater_Chur_2022_Low_Res_25.jpg?w=1125 1125w,/images/Peiden_Theater_Chur_2022_Low_Res_25.jpg?w=1242 1242w,/images/Peiden_Theater_Chur_2022_Low_Res_25.jpg?w=1280 1280w,/images/Peiden_Theater_Chur_2022_Low_Res_25.jpg?w=1400 1400w,/images/Peiden_Theater_Chur_2022_Low_Res_25.jpg?w=1500 1500w,/images/Peiden_Theater_Chur_2022_Low_Res_25.jpg?w=1600 1600w,/images/Peiden_Theater_Chur_2022_Low_Res_25.jpg?w=1700 1700w,/images/Peiden_Theater_Chur_2022_Low_Res_25.jpg?w=1800 1800w,/images/Peiden_Theater_Chur_2022_Low_Res_25.jpg?w=1920 1920w" data-sizes="auto" alt="" src="">
+               </div>
+
+                                 <div class="article-slideshow-slide__caption">
+                     <p>© Theater Chur, Yanik Bürkli</p>
+
+                  </div>
+                           </div>
+                     <div class="article-slideshow-slide">
+               <div class="article-slideshow-slide__image">
+                  <img class="js-lazyload lazyload-image" data-src="/images/Peiden_Theater_Chur_2022_Low_Res_29.jpg?w=1600" data-srcset="/images/Peiden_Theater_Chur_2022_Low_Res_29.jpg?w=100 100w,/images/Peiden_Theater_Chur_2022_Low_Res_29.jpg?w=200 200w,/images/Peiden_Theater_Chur_2022_Low_Res_29.jpg?w=300 300w,/images/Peiden_Theater_Chur_2022_Low_Res_29.jpg?w=400 400w,/images/Peiden_Theater_Chur_2022_Low_Res_29.jpg?w=500 500w,/images/Peiden_Theater_Chur_2022_Low_Res_29.jpg?w=640 640w,/images/Peiden_Theater_Chur_2022_Low_Res_29.jpg?w=750 750w,/images/Peiden_Theater_Chur_2022_Low_Res_29.jpg?w=828 828w,/images/Peiden_Theater_Chur_2022_Low_Res_29.jpg?w=1024 1024w,/images/Peiden_Theater_Chur_2022_Low_Res_29.jpg?w=1125 1125w,/images/Peiden_Theater_Chur_2022_Low_Res_29.jpg?w=1242 1242w,/images/Peiden_Theater_Chur_2022_Low_Res_29.jpg?w=1280 1280w,/images/Peiden_Theater_Chur_2022_Low_Res_29.jpg?w=1400 1400w,/images/Peiden_Theater_Chur_2022_Low_Res_29.jpg?w=1500 1500w,/images/Peiden_Theater_Chur_2022_Low_Res_29.jpg?w=1600 1600w,/images/Peiden_Theater_Chur_2022_Low_Res_29.jpg?w=1700 1700w,/images/Peiden_Theater_Chur_2022_Low_Res_29.jpg?w=1800 1800w,/images/Peiden_Theater_Chur_2022_Low_Res_29.jpg?w=1920 1920w" data-sizes="auto" alt="" src="">
+               </div>
+
+                                 <div class="article-slideshow-slide__caption">
+                     <p>© Theater Chur, Yanik Bürkli</p>
+
+                  </div>
+                           </div>
+                     <div class="article-slideshow-slide">
+               <div class="article-slideshow-slide__image">
+                  <img class="js-lazyload lazyload-image" data-src="/images/Peiden_Theater_Chur_2022_Low_Res_30.jpg?w=1600" data-srcset="/images/Peiden_Theater_Chur_2022_Low_Res_30.jpg?w=100 100w,/images/Peiden_Theater_Chur_2022_Low_Res_30.jpg?w=200 200w,/images/Peiden_Theater_Chur_2022_Low_Res_30.jpg?w=300 300w,/images/Peiden_Theater_Chur_2022_Low_Res_30.jpg?w=400 400w,/images/Peiden_Theater_Chur_2022_Low_Res_30.jpg?w=500 500w,/images/Peiden_Theater_Chur_2022_Low_Res_30.jpg?w=640 640w,/images/Peiden_Theater_Chur_2022_Low_Res_30.jpg?w=750 750w,/images/Peiden_Theater_Chur_2022_Low_Res_30.jpg?w=828 828w,/images/Peiden_Theater_Chur_2022_Low_Res_30.jpg?w=1024 1024w,/images/Peiden_Theater_Chur_2022_Low_Res_30.jpg?w=1125 1125w,/images/Peiden_Theater_Chur_2022_Low_Res_30.jpg?w=1242 1242w,/images/Peiden_Theater_Chur_2022_Low_Res_30.jpg?w=1280 1280w,/images/Peiden_Theater_Chur_2022_Low_Res_30.jpg?w=1400 1400w,/images/Peiden_Theater_Chur_2022_Low_Res_30.jpg?w=1500 1500w,/images/Peiden_Theater_Chur_2022_Low_Res_30.jpg?w=1600 1600w,/images/Peiden_Theater_Chur_2022_Low_Res_30.jpg?w=1700 1700w,/images/Peiden_Theater_Chur_2022_Low_Res_30.jpg?w=1800 1800w,/images/Peiden_Theater_Chur_2022_Low_Res_30.jpg?w=1920 1920w" data-sizes="auto" alt="" src="">
+               </div>
+
+                                 <div class="article-slideshow-slide__caption">
+                     <p>© Theater Chur, Yanik Bürkli</p>
+
+                  </div>
+                           </div>
+                     <div class="article-slideshow-slide">
+               <div class="article-slideshow-slide__image">
+                  <img class="js-lazyload lazyload-image" data-src="/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=1600" data-srcset="/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=100 100w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=200 200w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=300 300w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=400 400w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=500 500w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=640 640w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=750 750w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=828 828w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=1024 1024w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=1125 1125w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=1242 1242w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=1280 1280w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=1400 1400w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=1500 1500w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=1600 1600w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=1700 1700w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=1800 1800w,/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=1920 1920w" data-sizes="auto" alt="" src="">
+               </div>
+
+                                 <div class="article-slideshow-slide__caption">
+                     <p>© Theater Chur, Yanik Bürkli</p>
+
+                  </div>
+                           </div>
+               </div>
+
+               <div class="article-slideshow__arrow article-slideshow__arrow--prev js-article-slideshow__arrow"></div>
+         <div class="article-slideshow__arrow article-slideshow__arrow--next js-article-slideshow__arrow"></div>
+         </div>
+</section>         
+         
+         
+      </article>
+   </main>
+
+   <footer class="footer">
+
+   <div class="footer__inner">
+      <div class="footer__columns">
+         <div class="footer__column footer__column--left">
+            <div class="footer__column-text">
+               <p><a href="https://www.schauspielhaus.ch/de/neue-startseite#">IMPRESSUM</a><br />
+<a href="https://www.schauspielhaus.ch/de/neue-startseite#">DATENSCHUTZ</a><br />
+<a href="https://www.schauspielhaus.ch/de/neue-startseite#">AGB</a><br />
+<a href="https://www.schauspielhaus.ch/de/neue-startseite#">KONTAKT</a><br />
+<br />
+&nbsp;</p>
+
+<p>Schauspielhaus Zürich AG<br />
+Zeltweg 5, 8032 Zürich</p>
+
+<p>Theaterkasse<br />
+Telefon +41 44 258 77 77<br />
+theaterkasse@schauspielhaus.ch</p>
+
+<p>Mo-Fr: 11.30 bis 18.00 Uhr<br />
+Sa: 14.00 bis 18.00 Uhr</p>
+
+            </div>
+         </div>
+
+         <div class="footer__column footer__column--right">
+            <div class="footer__socialmedia">
+               <div class="footer__socialmedia-text">
+                  Folgen Sie uns auf:
+               </div>
+
+               <ul class="socialmedia-items">
+   <li>
+      <a href="https://www.instagram.com/schauspielhaus.ch/">
+         <img src="/elements/icon_socialmedia_instagram.svg" alt="instagram">
+      </a>
+   </li>
+   <li>
+      <a href="https://soundcloud.com/schauspielhauszuerich24">
+         <img src="/elements/icon_socialmedia_soundcloud.svg" alt="soundcloud">
+      </a>
+   </li>
+   <li>
+      <a href="https://x.com/Zschauspielhaus">
+         <img src="/elements/icon_socialmedia_x.svg" alt="x">
+      </a>
+   </li>
+   <li>
+      <a href="https://www.facebook.com/schauspielhaus.ch">
+         <img src="/elements/icon_socialmedia_facebook.svg" alt="facebook">
+      </a>
+   </li>
+   <li>
+      <a href="https://www.linkedin.com/company/693523/admin/dashboard/">
+         <img src="/elements/icon_socialmedia_linkedin.svg" alt="linkedin">
+      </a>
+   </li>
+   <li>
+      <a href="https://www.tiktok.com/@schauspielhaus.ch">
+         <img src="/elements/icon_socialmedia_tiktok.svg" alt="tiktok">
+      </a>
+   </li>
+<ul>            </div>
+
+            <div class="footer__supporters">
+               <div class="footer__supporter">
+                  <a href="https://www.theaterschweiz.ch">
+                     <img class="footer__supporter-logo" src="/elements/leben_ist_theater.png" alt="Logo Kultur Stadt Zürich">
+                  </a>
+               </div>
+            </div>
+
+            <div class="footer__supporters">
+               <div class="footer__supporter">
+                  <a href="https://www.stadt-zuerich.ch/prd/de/index/kultur.html">
+                     <img class="footer__supporter-logo" src="/elements/Zurich_Kultur_Weiss.svg" alt="Logo Kultur Stadt Zürich">
+                  </a>
+               </div>
+               <div class="footer__supporter">
+                  <a href="https://www.migros-engagement.ch/de/kulturprozent"> <img class="footer__supporter-logo"
+                        src="/elements/Migros_Weiss.svg" alt="Logo Migros Kulturprozent">
+                  </a>
+               </div>
+               <div class="footer__supporter">
+                  <a href="https://www.zkb.ch/de/ueber-uns/unser-engagement/kultur-szene/schauspielhaus-zuerich.html">
+                     <img class="footer__supporter-logo" src="/elements/ZKB_Weiss.svg" alt="Logo Zürcher Kantonalbank">
+                  </a>
+               </div>
+            </div>
+
+         </div>
+      </div>
+
+   </div>
+</footer>
+
+
+   <script>
+      window.lazySizesConfig = {
+         lazyClass: 'js-lazyload',
+         minSize: 800,
+      };
+   </script>
+   <script src="/scripts/lazysizes.min.js?v=1"></script>
+   <script src="/scripts/jquery-3.3.1.min.js"></script>
+   <script src="/scripts/fastclick.js"></script>
+   <script src="/scripts/truncateit.js"></script>
+   <script src="/scripts/cbplayer.js"></script>
+   <script src="/scripts/cblightbox.js?v=20240506100005"></script>
+   <script src="/scripts/flickity.pkgd.min.js"></script>
+   <script src="/scripts/flickity-fade.js"></script>
+   <script src="/scripts/lottie.js"></script>
+   <script src="/scripts/jquery.form.min.js"></script>
+   <script src="/scripts/jquery.hoverIntent.min.js"></script>
+   <script src="/scripts/dropzone.js"></script>
+   <script src="/scripts/splide.min.js"></script>
+   <script src="/scripts/three.min.js"></script>
+   <script src="/scripts/panolens.min.js"></script>
+   <script src="/scripts/main.js?v=20240909145633"></script>
+   <script src="https://hcaptcha.com/1/api.js?hl=de&amp;recaptchacompat=off" async defer></script>
+</body>
+</html>

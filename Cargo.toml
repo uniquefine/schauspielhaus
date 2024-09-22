@@ -15,10 +15,16 @@ ical = { version = "0.7", default-features = false, features = ["property"] }
 regex = "1.5"
 diesel = { version = "2.1.0", features = ["postgres", "time"] }
 dotenvy = "0.15"
-time = "0.3.29"
+time = { version = "0.3.36", features = ["serde", "formatting", "macros"] }
 anyhow = "1.0.75"
 lazy_static = "1.4.0"
 tokio = { version = "1.32.0", features = ["full"] }
+teloxide = { version = "0.12.2", features = ["macros", "throttle"] }
+rand = "0.8.5"
+url = "2.4.1"
+serde = "1.0.210"
+serde_json = "1.0.128"
+clap = { version = "4.5.17", features = ["derive"] }
 
 [dev-dependencies]
 goldie = "0.4.3"

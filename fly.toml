@@ -1,0 +1,21 @@
+# fly.toml app configuration file generated for schauspielhaus on 2024-09-21T19:02:32+02:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'schauspielhaus'
+primary_region = 'ams'
+
+[build]
+
+[env]
+  PORT = '8080'
+
+[[vm]]
+  size = 'shared-cpu-1x'
+
+[experimental]
+entrypoint = [
+  "/usr/local/bin/schauspielhaus",
+  "start"
+]
