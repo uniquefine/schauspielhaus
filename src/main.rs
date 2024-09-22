@@ -1,12 +1,17 @@
+use std::hash::Hash;
+use std::hash::Hasher;
 
 use clap::Parser;
 use clap::Subcommand;
 use diesel::PgConnection;
 use dotenvy::dotenv;
+use env_logger;
 use log::debug;
 use log::error;
 use log::info;
+use log::LevelFilter;
 use rand::seq::SliceRandom;
+use rand::Rng;
 use schauspielhaus::establish_connection;
 use schauspielhaus::models::create_play_with_screenings;
 use schauspielhaus::models::get_chat;
@@ -24,7 +29,10 @@ use schauspielhaus::models::Topic;
 use teloxide::adaptors::throttle::Limits;
 use teloxide::adaptors::Throttle;
 use teloxide::payloads::SendPollSetters;
+use teloxide::types::Me;
 use teloxide::types::ParseMode;
+use teloxide::utils::markdown;
+use teloxide::ApiError;
 use teloxide::RequestError;
 use teloxide::{prelude::*, types::ChatKind, utils::command::BotCommands};
 
@@ -115,24 +123,6 @@ async fn start_bot() {
     log::info!("Starting schauspielhaus bot...");
     let bot = Bot::from_env().throttle(Limits::default());
 
-    //let h = spawn_blocking(|| -> anyhow::Result<(PlayWithScreenings, ChatWithTopics)> {
-    //    let conn = &mut establish_connection();
-    //    let c = get_chat_with_topics(conn, -1001975554335)?;
-    //    let p = get_play(conn, c.topics[0].play_id)?;
-    //    return Ok((p, c));
-    //})
-    //.await;
-    //let (p, c) = h.unwrap().unwrap();
-
-    //send_play_info(
-    //    &bot,
-    //    ChatId(-1001975554335),
-    //    &p.play,
-    //    c.topics[0].message_thread_id,
-    //)
-    //.await
-    //.unwrap();
-
     // await both futures concurrently
     tokio::select! {
         _ = run_sync_function_periodically() => {},
@@ -154,13 +144,6 @@ fn update_plays(mut connection: &mut PgConnection) {
         }
     }
 }
-
-//#[tokio::main]
-//async fn main() {
-//    let env = env_logger::Env::default().filter_or("RUST_LOG", "info");
-//    env_logger::init_from_env(env);
-//    run_sync_function_periodically().await;
-//}
 
 /// These commands are supported:
 #[derive(BotCommands, Clone)]
@@ -242,34 +225,42 @@ async fn answer(bot: Throttle<Bot>, msg: Message, cmd: Command) -> Result<(), Re
                     return Ok(());
                 }
             }
-            if let Err(e) = refresh_topics(&bot, msg.chat.id).await {
-                error!("Error refreshing topics for chat {}: {}", msg.chat.id.0, e);
-                bot.send_message(
-                    msg.chat.id,
-                    format!(
-                        "Error refreshing topics, please contact the bot admin:\n```{}```",
-                        e
-                    ),
-                )
-                .await?;
+            match refresh_topics(&bot, msg.chat.id).await {
+                Ok(_) => {
+                    bot.send_message(msg.chat.id, "Topics created")
+                        .await
+                        .expect("Error sending message");
+                }
+                Err(e) => {
+                    error!("Error refreshing topics for chat {}: {}", msg.chat.id.0, e);
+                    bot.send_message(
+                        msg.chat.id,
+                        format!(
+                            "Error refreshing topics, please contact the bot admin:\n```{}```",
+                            e
+                        ),
+                    )
+                    .await
+                    .expect("Error sending message");
+                }
             }
-
             return Ok(());
         }
         Command::Refresh => {
             if !ensure_chat_exists(&bot, msg.chat.id).await {
                 return Ok(());
             }
-            if let Err(e) = refresh_topics(&bot, msg.chat.id).await {
-                error!("Error refreshing topics for chat {}: {}", msg.chat.id.0, e);
-                bot.send_message(
-                    msg.chat.id,
-                    format!(
-                        "Error refreshing topics, please contact the bot admin:\n```{}```",
-                        e
-                    ),
-                )
-                .await?;
+            match refresh_topics(&bot, msg.chat.id).await {
+                Ok(_) => {
+                    bot.send_message(msg.chat.id, "Topics refreshed")
+                        .await
+                        .expect("Error sending message");
+                }
+                Err(e) => {
+                    error!("Error refreshing topics for chat {}: {}", msg.chat.id.0, e);
+                    bot.send_message(msg.chat.id, format!("Error refreshing topics: {}", e))
+                        .await?;
+                }
             }
             return Ok(());
         }
@@ -381,12 +372,19 @@ async fn random_forum_icon(bot: &Throttle<Bot>) -> Result<Option<String>, Reques
         .map(|e| e.to_string()))
 }
 
+// pick one at random from 0x6FB9F0, 0xFFD67E, 0xCB86DB, 0x8EEE98, 0xFF93B2, or 0xFB6F5F
+fn random_icon_color() -> u32 {
+    let colors = [0x6FB9F0, 0xFFD67E, 0xCB86DB, 0x8EEE98, 0xFF93B2, 0xFB6F5F];
+    *colors.choose(&mut rand::thread_rng()).unwrap()
+}
+
 async fn refresh_topics(bot: &Throttle<Bot>, msg_chat_id: ChatId) -> Result<(), anyhow::Error> {
     let mut connection = &mut establish_connection();
     let plays = get_plays_and_topics(connection, msg_chat_id.0).map_err(|e| {
         error!("Error getting plays: {}", e.to_string());
         e
     })?;
+    debug!("Found {} plays to refresh", plays.len());
     // collect errors
     let mut errors = vec![];
     for PlayAndTopic {
@@ -394,13 +392,17 @@ async fn refresh_topics(bot: &Throttle<Bot>, msg_chat_id: ChatId) -> Result<(), 
         topic,
     } in plays
     {
+        // break if errors is not empty
+        if errors.len() > 0 {
+            break;
+        }
+
         let message_thread_id = match &topic {
             Some(t) => t.message_thread_id,
             None => {
                 // Create the forum topic
-                let icon = random_forum_icon(&bot).await?.unwrap_or("".to_string());
                 let t = match bot
-                    .create_forum_topic(msg_chat_id, &play.name, 0, icon)
+                    .create_forum_topic(msg_chat_id, &play.name, random_icon_color(), "")
                     .await
                 {
                     Ok(t) => t,
@@ -417,34 +419,52 @@ async fn refresh_topics(bot: &Throttle<Bot>, msg_chat_id: ChatId) -> Result<(), 
             }
         };
         // Delete the existing pinned message
-        if let Some(t) = &topic {
+        let mut pinned_message_id = topic.as_ref().map_or(0, |t| t.pinned_message_id);
+        let pinned_message_hash = topic.as_ref().map_or(0, |t| t.pinned_message_hash);
+
+        let message_text = pinned_message(&play, &screenings);
+        let message_hash = (|| {
+            let mut hasher = std::collections::hash_map::DefaultHasher::new();
+            message_text.hash(&mut hasher);
+            hasher.finish()
+        })();
+        if (pinned_message_hash as u64) != message_hash && pinned_message_id != 0 {
+            // The message has changed, update it
             match bot
-                .delete_message(msg_chat_id, teloxide::types::MessageId(t.pinned_message_id))
+                .delete_message(msg_chat_id, teloxide::types::MessageId(pinned_message_id))
                 .await
             {
                 Ok(_) => {}
+                Err(RequestError::Api(ApiError::MessageToDeleteNotFound)) => {
+                    // ignore if the message is already deleted
+                }
                 Err(e) => {
                     errors.push(anyhow::Error::msg(format!(
                         "Error deleting pinned message for play '{}': {}",
                         play.name, e
                     )));
-                    // Don't continue here if e.g. the message was already deleted
-                    // we still want to send the new message.
-                }
-            }
-        }
-
-        let pinned_message_id =
-            match send_play_info(&bot, msg_chat_id, &play, &screenings, message_thread_id).await {
-                Ok(id) => id,
-                Err(e) => {
-                    errors.push(anyhow::Error::msg(format!(
-                        "Error sending play info for play '{}': {}",
-                        play.name, e
-                    )));
                     continue;
                 }
-            };
+            }
+            pinned_message_id =
+                match create_pinned_message(&bot, message_text, msg_chat_id, message_thread_id)
+                    .await
+                {
+                    Ok(id) => id,
+                    Err(RequestError::Api(ApiError::MessageToReplyNotFound)) => {
+                        // ignore if the topic was deleted
+                        continue;
+                    }
+                    Err(e) => {
+                        errors.push(anyhow::Error::msg(format!(
+                            "Error sending play info for play '{}': {}",
+                            play.name, e
+                        )));
+                        continue;
+                    }
+                };
+        }
+
         match put_topic(
             &mut connection,
             Topic {
@@ -452,6 +472,7 @@ async fn refresh_topics(bot: &Throttle<Bot>, msg_chat_id: ChatId) -> Result<(), 
                 play_id: play.id,
                 chat_id: msg_chat_id.0,
                 pinned_message_id: pinned_message_id,
+                pinned_message_hash: message_hash as i64,
                 last_updated: OffsetDateTime::now_utc(),
             },
         ) {
@@ -478,34 +499,31 @@ async fn refresh_topics(bot: &Throttle<Bot>, msg_chat_id: ChatId) -> Result<(), 
     Ok(())
 }
 
-async fn send_play_info(
-    bot: &Throttle<Bot>,
-    msg_chat_id: ChatId,
+fn pinned_message(
     play: &schauspielhaus::models::Play,
     screenings: &Vec<schauspielhaus::models::Screening>,
-    message_thread_id: i32,
-) -> Result<i32, RequestError> {
+) -> String {
     let mut message_text = format!(
         "\
-🎭 [*{}*]({}{})
+[*{}*]({}{}) 🎭️
 
 {}
 
 {}
 ",
-        play.name,
+        markdown::escape(&play.name),
         schauspielhaus::scrape::BASE_URL,
         play.url,
-        play.description,
-        play.meta_info,
+        markdown::escape(&play.description),
+        markdown::escape(&play.meta_info),
     );
     if screenings.len() > 0 {
         message_text.push_str("\n🎟️ *Screenings*:");
     }
     for screening in screenings {
         message_text.push_str(&format!(
-            "\n- {} [tickets]({})",
-            option(&screening),
+            "\n\\- {} [tickets]({})",
+            markdown::escape(&option(&screening)),
             format!(
                 "https://www.zurichticket.ch/shz.webshop/webticket/shop?event={}",
                 screening
@@ -515,10 +533,19 @@ async fn send_play_info(
             )
         ));
     }
+    message_text
+}
+
+async fn create_pinned_message(
+    bot: &Throttle<Bot>,
+    message_text: String,
+    msg_chat_id: ChatId,
+    msg_thread_id: i32,
+) -> Result<i32, RequestError> {
     let pinned_msg = bot
         .send_message(msg_chat_id, message_text)
         .parse_mode(ParseMode::MarkdownV2)
-        .reply_to_message_id(teloxide::types::MessageId(message_thread_id))
+        .reply_to_message_id(teloxide::types::MessageId(msg_thread_id))
         .await?;
 
     // TODO: send screenigns
@@ -527,7 +554,7 @@ async fn send_play_info(
 
 async fn run_sync_function_periodically() {
     loop {
-        // Wait for 3 hours before running the scraper.
+        // Refresh topics every 3 hours
         sleep(Duration::from_secs(60 * 60 * 3)).await;
         tokio::task::spawn_blocking(|| {
             info!("establish database connection");
@@ -537,5 +564,25 @@ async fn run_sync_function_periodically() {
         })
         .await
         .unwrap();
+    }
+}
+
+#[test]
+fn test_get_plays_and_topics() {
+    let _ = env_logger::builder()
+        .is_test(true)
+        .filter_level(LevelFilter::Debug)
+        .try_init();
+    let mut connection = &mut establish_connection();
+    println!("Fetching plays and topics");
+    let chats = get_chats(&mut connection).unwrap();
+    for chat in chats {
+        let plays = get_plays_and_topics(&mut connection, chat.id).unwrap();
+        for PlayAndTopic { play, topic } in plays {
+            match topic {
+                Some(t) => println!("{}: {}", play.play.name, t.message_thread_id),
+                None => println!("{}: no topic", play.play.name),
+            }
+        }
     }
 }

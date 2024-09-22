@@ -36,6 +36,7 @@ diesel::table! {
         play_id -> Int4,
         last_updated -> Timestamptz,
         pinned_message_id -> Int4,
+        pinned_message_hash -> Int8,
     }
 }
 
