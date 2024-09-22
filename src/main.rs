@@ -78,13 +78,9 @@ async fn main() {
             start_bot().await;
         }
         Commands::Scrape => {
-            task::spawn_blocking(|| {
-                info!("establish database connection");
-                let connection = &mut establish_connection();
-                update_plays(connection);
-            })
-            .await
-            .unwrap();
+            info!("establish database connection");
+            let connection = &mut establish_connection();
+            update_plays(connection).await;
         }
         Commands::List => task::spawn_blocking(|| {
             let connection = &mut establish_connection();
@@ -111,28 +107,19 @@ async fn main() {
 }
 
 async fn start_bot() {
-    // spawn_blocking(|| {
-    //     info!("establish database connection");
-    //     let connection = &mut establish_connection();
-    //     info!("fetch new plays from schauspielhaus website");
-    //     update_plays(connection);
-    // })
-    // .await
-    // .unwrap();
-
     log::info!("Starting schauspielhaus bot...");
     let bot = Bot::from_env().throttle(Limits::default());
 
     // await both futures concurrently
     tokio::select! {
-        _ = run_sync_function_periodically() => {},
-        _ = Command::repl(bot, answer) => {},
+        _ = Command::repl(bot.clone(), answer) => {},
+       _ = run_sync_function_periodically(&bot) => {},
     }
 }
 
 // update_plays fetches the most recent plays from schauspielhaus and updates the database state.
-fn update_plays(mut connection: &mut PgConnection) {
-    match schauspielhaus::scrape::get_plays() {
+async fn update_plays(mut connection: &mut PgConnection) {
+    match schauspielhaus::scrape::get_plays().await {
         Ok(plays) => {
             info!("Found {} plays, inserting", plays.len());
             for (_url, play) in plays {
@@ -167,7 +154,7 @@ enum Command {
 }
 const HELP: &str = r"This bot only works in public super groups with topics enabled.";
 
-async fn answer(bot: Throttle<Bot>, msg: Message, cmd: Command) -> Result<(), RequestError> {
+async fn answer(bot: Throttle<Bot>, msg: Message, cmd: Command) -> ResponseResult<()> {
     debug!(
         "Received message: {:?} thread id: {:?} chat id: {:?}",
         msg, msg.thread_id, msg.chat.id
@@ -288,14 +275,14 @@ async fn answer(bot: Throttle<Bot>, msg: Message, cmd: Command) -> Result<(), Re
 async fn post_poll_for_topic(
     bot: &Throttle<Bot>,
     msg_chat_id: ChatId,
-    topic_id: i32,
+    topic_id: teloxide::types::ThreadId,
 ) -> Result<(), RequestError> {
     let connection = &mut establish_connection();
-    let play_with_screenings = match get_play_for_topic(connection, topic_id) {
+    let play_with_screenings = match get_play_for_topic(connection, topic_id.0 .0) {
         Ok(p) => p,
         Err(diesel::result::Error::NotFound) => {
             bot.send_message(msg_chat_id, "No play found for this topic.")
-                .reply_to_message_id(teloxide::types::MessageId(topic_id))
+                .message_thread_id(topic_id)
                 .await?;
             return Ok(());
         }
@@ -308,7 +295,7 @@ async fn post_poll_for_topic(
                     topic_id, e
                 ),
             )
-            .reply_to_message_id(teloxide::types::MessageId(topic_id))
+            .message_thread_id(topic_id)
             .await?;
             return Ok(());
         }
@@ -327,7 +314,7 @@ async fn post_poll_for_topic(
             false => "When should we go?".to_string(),
         };
         bot.send_poll(msg_chat_id, title, chunk.iter().map(|s| option(s)))
-            .reply_to_message_id(teloxide::types::MessageId(topic_id))
+            .message_thread_id(topic_id)
             .allows_multiple_answers(true)
             .is_anonymous(false)
             .await?;
@@ -363,15 +350,6 @@ async fn ensure_chat_exists(bot: &Throttle<Bot>, msg_chat_id: ChatId) -> bool {
     }
 }
 
-async fn random_forum_icon(bot: &Throttle<Bot>) -> Result<Option<String>, RequestError> {
-    let stickers = bot.get_forum_topic_icon_stickers().await?;
-    let sticker = stickers.choose(&mut rand::thread_rng());
-    Ok(sticker
-        .map(|s| s.custom_emoji_id())
-        .flatten()
-        .map(|e| e.to_string()))
-}
-
 // pick one at random from 0x6FB9F0, 0xFFD67E, 0xCB86DB, 0x8EEE98, 0xFF93B2, or 0xFB6F5F
 fn random_icon_color() -> u32 {
     let colors = [0x6FB9F0, 0xFFD67E, 0xCB86DB, 0x8EEE98, 0xFF93B2, 0xFB6F5F];
@@ -398,7 +376,7 @@ async fn refresh_topics(bot: &Throttle<Bot>, msg_chat_id: ChatId) -> Result<(), 
         }
 
         let message_thread_id = match &topic {
-            Some(t) => t.message_thread_id,
+            Some(t) => teloxide::types::ThreadId(teloxide::types::MessageId(t.message_thread_id)),
             None => {
                 // Create the forum topic
                 let t = match bot
@@ -414,8 +392,8 @@ async fn refresh_topics(bot: &Throttle<Bot>, msg_chat_id: ChatId) -> Result<(), 
                         continue;
                     }
                 };
-                debug!("Created topic {} with ID {}", t.name, t.message_thread_id);
-                t.message_thread_id
+                debug!("Created topic {} with ID {}", t.name, t.thread_id);
+                t.thread_id
             }
         };
         // Delete the existing pinned message
@@ -468,7 +446,7 @@ async fn refresh_topics(bot: &Throttle<Bot>, msg_chat_id: ChatId) -> Result<(), 
         match put_topic(
             &mut connection,
             Topic {
-                message_thread_id: message_thread_id,
+                message_thread_id: message_thread_id.0 .0,
                 play_id: play.id,
                 chat_id: msg_chat_id.0,
                 pinned_message_id: pinned_message_id,
@@ -540,30 +518,61 @@ async fn create_pinned_message(
     bot: &Throttle<Bot>,
     message_text: String,
     msg_chat_id: ChatId,
-    msg_thread_id: i32,
+    msg_thread_id: teloxide::types::ThreadId,
 ) -> Result<i32, RequestError> {
     let pinned_msg = bot
         .send_message(msg_chat_id, message_text)
         .parse_mode(ParseMode::MarkdownV2)
-        .reply_to_message_id(teloxide::types::MessageId(msg_thread_id))
+        .message_thread_id(msg_thread_id)
         .await?;
 
     // TODO: send screenigns
     Ok(pinned_msg.id.0)
 }
 
-async fn run_sync_function_periodically() {
+async fn run_sync_function_periodically(bot: &Throttle<Bot>) {
     loop {
-        // Refresh topics every 3 hours
+        info!("establish database connection");
+        let connection = &mut establish_connection();
+        info!("fetch new plays from schauspielhaus website");
+        update_plays(connection).await;
+        let chats = get_chats(&mut establish_connection()).unwrap();
+        for chat in chats {
+            let chat_id = teloxide::prelude::ChatId(chat.id);
+            match refresh_topics(bot, chat_id).await {
+                Ok(_) => {
+                    match bot
+                        .send_message(chat_id, "Topics refreshed")
+                        .disable_notification(true)
+                        .await
+                    {
+                        Ok(_) => {}
+                        // ignore if the chat was deleted
+                        Err(RequestError::Api(ApiError::ChatNotFound)) => {}
+                        Err(e) => {
+                            error!("Error sending message to chat {}: {}", chat.id, e);
+                        }
+                    }
+                }
+                Err(e) => {
+                    match bot
+                        .send_message(chat_id, format!("Error refreshing topics: {}", e))
+                        .await
+                    {
+                        Ok(_) => {}
+                        // ignore if the chat was deleted
+                        Err(RequestError::Api(ApiError::ChatNotFound)) => {}
+                        Err(send_err) => {
+                            error!(
+                                "Error sending message to chat {}: {}, refresh_error: {}",
+                                chat.id, send_err, e
+                            );
+                        }
+                    }
+                }
+            }
+        }
         sleep(Duration::from_secs(60 * 60 * 3)).await;
-        tokio::task::spawn_blocking(|| {
-            info!("establish database connection");
-            let connection = &mut establish_connection();
-            info!("fetch new plays from schauspielhaus website");
-            update_plays(connection);
-        })
-        .await
-        .unwrap();
     }
 }
 

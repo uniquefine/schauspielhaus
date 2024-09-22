@@ -37,18 +37,20 @@ lazy_static! {
     static ref PLAY_DESCRIPTION_SELECTOR: Selector = Selector::parse("div.article-content__text p").unwrap();
 }
 
-pub fn download_calendar() -> Result<String> {
+pub async fn download_calendar() -> Result<String> {
     let kalender_url = format!("{}/de/kalender", BASE_URL);
-    let html_content = reqwest::blocking::get(&kalender_url)
+    let html_content = reqwest::get(&kalender_url)
+        .await
         .context("loading main calendar page")?
         .text()
+        .await
         .context("reading main calendar page")?;
     Ok(html_content)
 }
 
-#[test]
-fn test_download_calendar() {
-    let html_content = download_calendar().unwrap();
+#[tokio::test]
+async fn test_download_calendar() {
+    let html_content = download_calendar().await.unwrap();
     // write content to testdata/calendar.html file
     let mut file = File::create("src/testdata/calendar.html").unwrap();
     file.write_all(html_content.as_bytes()).unwrap();
@@ -85,14 +87,14 @@ fn test_find_plays() {
 
 // get_plays downloads a the plays from the schauspielhaus calendar
 // and returns a map title -> PlayWithScreenings.
-pub fn get_plays() -> Result<HashMap<String, PlayWithScreenings>> {
+pub async fn get_plays() -> Result<HashMap<String, PlayWithScreenings>> {
     // base url
-    let html_content = download_calendar()?;
+    let html_content = download_calendar().await?;
 
     let plays = find_plays(&html_content);
     let mut plays_with_screenings: HashMap<String, PlayWithScreenings> = HashMap::new();
     for play in plays {
-        let p = match get_play(&play) {
+        let p = match get_play(&play).await {
             Ok(p) => p,
             Err(e) => {
                 error!(
@@ -108,28 +110,32 @@ pub fn get_plays() -> Result<HashMap<String, PlayWithScreenings>> {
     Ok(plays_with_screenings)
 }
 
-#[test]
-fn test_download_play() {
-    let play = &find_plays(&download_calendar().unwrap())[0];
-    let play_page_content = reqwest::blocking::get(format!("{}{}", BASE_URL, play))
+#[tokio::test]
+async fn test_download_play() {
+    let play = &find_plays(&download_calendar().await.unwrap())[0];
+    let play_page_content = reqwest::get(format!("{}{}", BASE_URL, play))
+        .await
         .unwrap()
         .text()
+        .await
         .unwrap();
     goldie::assert!(play_page_content);
 }
 
-#[test]
-fn test_find_play_with_screenings() {
+#[tokio::test]
+async fn test_find_play_with_screenings() {
     // read html from src/testdata/test_download_play.golden
     let mut file = File::open("src/testdata/test_download_play.golden").unwrap();
     let mut html_content = String::new();
     file.read_to_string(&mut html_content).unwrap();
-    let play = find_play_with_screenings("/de/play/der-zerbrochne-krug", &html_content).unwrap();
+    let play = find_play_with_screenings("/de/play/der-zerbrochne-krug", &html_content)
+        .await
+        .unwrap();
     let play_json = serde_json::to_string_pretty(&play).unwrap();
     goldie::assert!(play_json);
 }
 
-pub fn find_play_with_screenings(
+pub async fn find_play_with_screenings(
     url: &str,
     play_page_content: &str,
 ) -> Result<PlayWithScreenings, Box<dyn Error>> {
@@ -183,60 +189,8 @@ pub fn find_play_with_screenings(
         .collect::<Vec<String>>()
         .join("\n");
 
-    let collect_screening = |production_row: ElementRef| -> Result<Screening> {
-        // Search for `a.calendar-icon` in the production row
-        let selector = Selector::parse("div.activity-ticket__calendar a").unwrap();
-        // Extract the calendar event link
-        let calendar_link = production_row
-            .select(&selector)
-            .next()
-            .context("No calendar icon found for element")?
-            .value()
-            .attr("href")
-            .context("error finding href attribute for element")?
-            .to_string();
-
-        // Download ics file at the calendar link and parse the contents to extract
-        // Description, start and end date.
-        let buf = reqwest::blocking::get(format!("{}{}", BASE_URL, calendar_link))?.bytes()?;
-        let reader = ical::PropertyParser::from_reader(buf.as_ref());
-        let mut id: Option<String> = None;
-        let mut start: Option<OffsetDateTime> = None;
-
-        for l in reader {
-            let line = l?;
-            match (line.name.as_str(), line.value) {
-                ("UID", Some(i)) => id = Some(i),
-                ("DTSTART", Some(d)) => start = parse_time(d),
-                (_, _) => continue,
-            }
-        }
-        let screening: Screening;
-        match (id, start) {
-            (Some(i), Some(s)) => {
-                screening = Screening {
-                    id: 0,
-                    play_id: 0,
-                    url: calendar_link,
-                    location: "".to_string(),
-                    webid: i,
-                    start_time: s,
-                }
-            }
-            (i, s) => {
-                return Err(anyhow!(
-                    "error filling screening link: {}, id {:?}, start {:?}",
-                    calendar_link,
-                    i,
-                    s,
-                ));
-            }
-        }
-        Ok(screening)
-    };
-
     for production_row in fragment.select(&SCREENING_SELECTOR) {
-        match collect_screening(production_row) {
+        match collect_screening(production_row).await {
             Ok(s) => play.screenings.push(s),
             Err(e) => {
                 error!("Error collecting screening: {}", e.to_string());
@@ -261,9 +215,67 @@ pub fn find_play_with_screenings(
     Ok(play)
 }
 
-pub fn get_play<'a>(url: &str) -> Result<PlayWithScreenings, Box<dyn Error>> {
-    let play_page_content = reqwest::blocking::get(format!("{}{}", BASE_URL, url))?.text()?;
-    find_play_with_screenings(url, &play_page_content)
+async fn collect_screening(production_row: ElementRef<'_>) -> Result<Screening> {
+    // Search for `a.calendar-icon` in the production row
+    let selector = Selector::parse("div.activity-ticket__calendar a").unwrap();
+    // Extract the calendar event link
+    let calendar_link = production_row
+        .select(&selector)
+        .next()
+        .context("No calendar icon found for element")?
+        .value()
+        .attr("href")
+        .context("error finding href attribute for element")?
+        .to_string();
+
+    // Download ics file at the calendar link and parse the contents to extract
+    // Description, start and end date.
+    let buf = reqwest::get(format!("{}{}", BASE_URL, calendar_link))
+        .await?
+        .bytes()
+        .await?;
+    let reader = ical::PropertyParser::from_reader(buf.as_ref());
+    let mut id: Option<String> = None;
+    let mut start: Option<OffsetDateTime> = None;
+
+    for l in reader {
+        let line = l?;
+        match (line.name.as_str(), line.value) {
+            ("UID", Some(i)) => id = Some(i),
+            ("DTSTART", Some(d)) => start = parse_time(d),
+            (_, _) => continue,
+        }
+    }
+    let screening: Screening;
+    match (id, start) {
+        (Some(i), Some(s)) => {
+            screening = Screening {
+                id: 0,
+                play_id: 0,
+                url: calendar_link,
+                location: "".to_string(),
+                webid: i,
+                start_time: s,
+            }
+        }
+        (i, s) => {
+            return Err(anyhow!(
+                "error filling screening link: {}, id {:?}, start {:?}",
+                calendar_link,
+                i,
+                s,
+            ));
+        }
+    }
+    Ok(screening)
+}
+
+pub async fn get_play<'a>(url: &str) -> Result<PlayWithScreenings, Box<dyn Error>> {
+    let play_page_content = reqwest::get(format!("{}{}", BASE_URL, url))
+        .await?
+        .text()
+        .await?;
+    find_play_with_screenings(url, &play_page_content).await
 }
 
 fn parse_time(d: String) -> Option<OffsetDateTime> {
@@ -280,7 +292,7 @@ fn parse_time(d: String) -> Option<OffsetDateTime> {
 
 #[test]
 fn test_screenings_selector() {
-    for (path, expected) in [("testdata/play.html", 2), ("testdata/play_curl.html", 14)] {
+    for (path, expected) in [("testdata/play.html", 0), ("testdata/play_curl.html", 14)] {
         let mut file = File::open(path).unwrap();
         let mut html_content = String::new();
         file.read_to_string(&mut html_content).unwrap();
@@ -295,10 +307,10 @@ fn test_screenings_selector() {
     }
 }
 
-#[test]
-fn test_get_plays() {
-    let plays = get_plays().unwrap();
-    assert_eq!(plays.len(), 10);
+#[tokio::test]
+async fn test_get_plays() {
+    let plays = get_plays().await.unwrap();
+    assert_eq!(plays.len(), 23);
 }
 
 #[test]

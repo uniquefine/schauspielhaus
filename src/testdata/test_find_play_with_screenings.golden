@@ -2,21 +2,21 @@
   "play": {
     "id": 0,
     "url": "/de/play/der-zerbrochne-krug",
-    "name": "Peiden",
-    "description": "PEIDEN ist ein sehr persönliches und vielschichtiges Theaterprojekt des Schweizer Schauspielers Bruno Cathomas auf Schweizerdeutsch, Hochdeutsch und Rätoromanisch, welches im Oktober 2022 am Theater Chur Premiere feierte. Es entstand in Zusammenarbeit mit Rafael Sanchez, dem designierten Zürcher Co-Intendanten ab 2025. In unserer Interimsspielzeit 2024/25 gibt er mit der Übernahme dieser Inszenierung einen Vorgeschmack seiner Arbeit als Regisseur am Schauspielhaus.",
-    "image_url": "/images/Peiden_Theater_Chur_2022_Low_Res_13.jpg?w=1600",
-    "meta_info": "Pfauen\n80 Minuten, ohne Pause\nZürich-Premiere: September 2024"
+    "name": "Liebe, einfach ausserirdisch",
+    "description": "«Unsere Mission wird beendet??? Nein, Wir müssen ZURÜCK??? NEIN!!!!!!! Ich kann nicht glauben, dass man uns abberuft. Glaubst du, ich werde sie nicht vermissen, die Leute, die ich hier liebgewonnen habe? Die Art, wie die Menschen ihren Blick abwenden, wenn ich auf sie zugehe? Oder die da oben im Rang, die mich sowieso nicht sehen?»\nEs sollte eine triumphale Rückkehr sein: Für September hatten wir im Pfauen eine Inszenierung von René Pollesch geplant, Autor, Regisseur und einer der bedeutendsten Theatermacher der Gegenwart. Am 26. Februar 2024 ist René in Berlin gestorben. Die Lücke, die sein Tod hinterlässt, ist nicht zu schliessen. Um die Grösse und den Reichtum seiner Arbeiten weiterleben zu lassen und für Sie und uns präsent zu halten, holen wir LIEBE, EINFACH AUSSERIRDISCH nach Zürich, uraufgeführt 2022 am Deutschen Theater Berlin und hochkarätig besetzt mit Sophie Rois, Trystan Pütter und Kotbong Yang. «Das witzig-geistreiche Trio infernal will uns mit auf einen grandiosen Ausflug hinaus in den Weltraum nehmen – und lässt uns dabei trotzdem lachend im Theatersessel bleiben. Und klatschen vor Glück.» (FAZ)",
+    "image_url": "/images/c_Luna_Zscharnt_10_headerbild.jpg?w=1600",
+    "meta_info": "Pfauen\n1 Std. 25 Min., keine Pause\nZürich-Premiere: 21. September 2024"
   },
   "screenings": [
     {
       "id": 0,
       "play_id": 0,
-      "webid": "event_31444@www.schauspielhaus.ch",
+      "webid": "event_31436@www.schauspielhaus.ch",
       "location": "",
-      "url": "/de/kalender/30781/peiden/31444.ics",
+      "url": "/de/kalender/30546/liebe-einfach-ausserirdisch/31436.ics",
       "start_time": [
         2024,
-        271,
+        267,
         20,
         0,
         0,
@@ -29,12 +29,12 @@
     {
       "id": 0,
       "play_id": 0,
-      "webid": "event_31445@www.schauspielhaus.ch",
+      "webid": "event_31437@www.schauspielhaus.ch",
       "location": "",
-      "url": "/de/kalender/30781/peiden/31445.ics",
+      "url": "/de/kalender/30546/liebe-einfach-ausserirdisch/31437.ics",
       "start_time": [
         2024,
-        272,
+        275,
         20,
         0,
         0,
@@ -47,12 +47,48 @@
     {
       "id": 0,
       "play_id": 0,
-      "webid": "event_31786@www.schauspielhaus.ch",
+      "webid": "event_31438@www.schauspielhaus.ch",
       "location": "",
-      "url": "/de/kalender/30781/peiden/31786.ics",
+      "url": "/de/kalender/30546/liebe-einfach-ausserirdisch/31438.ics",
       "start_time": [
         2024,
-        280,
+        278,
+        20,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": 0,
+      "play_id": 0,
+      "webid": "event_31439@www.schauspielhaus.ch",
+      "location": "",
+      "url": "/de/kalender/30546/liebe-einfach-ausserirdisch/31439.ics",
+      "start_time": [
+        2024,
+        279,
+        20,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": 0,
+      "play_id": 0,
+      "webid": "event_31440@www.schauspielhaus.ch",
+      "location": "",
+      "url": "/de/kalender/30546/liebe-einfach-ausserirdisch/31440.ics",
+      "start_time": [
+        2024,
+        287,
         16,
         0,
         0,
@@ -65,13 +101,31 @@
     {
       "id": 0,
       "play_id": 0,
-      "webid": "event_31820@www.schauspielhaus.ch",
+      "webid": "event_31441@www.schauspielhaus.ch",
       "location": "",
-      "url": "/de/kalender/30781/peiden/31820.ics",
+      "url": "/de/kalender/30546/liebe-einfach-ausserirdisch/31441.ics",
       "start_time": [
         2024,
-        308,
-        17,
+        306,
+        20,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": 0,
+      "play_id": 0,
+      "webid": "event_31442@www.schauspielhaus.ch",
+      "location": "",
+      "url": "/de/kalender/30546/liebe-einfach-ausserirdisch/31442.ics",
+      "start_time": [
+        2024,
+        307,
+        20,
         0,
         0,
         0,

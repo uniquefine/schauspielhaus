@@ -10,7 +10,7 @@ reqwest = { version = "0.11", features = ["blocking", "json"] }
 scraper = "0.13.0"
 chrono = "0.4"
 log = "0.4"
-env_logger = "0.10"   # Example: using the env_logger crate
+env_logger = "0.10"
 ical = { version = "0.7", default-features = false, features = ["property"] }
 regex = "1.5"
 diesel = { version = "2.1.0", features = ["postgres", "time"] }
@@ -19,8 +19,8 @@ dotenvy = "0.15"
 time = { version = "0.3.36", features = ["serde", "formatting", "macros"] }
 anyhow = "1.0.75"
 lazy_static = "1.4.0"
-tokio = { version = "1.32.0", features = ["full"] }
-teloxide = { version = "0.12.2", features = ["macros", "throttle"] }
+tokio = { version = "1.8", features = ["full"] }
+teloxide = { version = "0.13.0", features = ["macros", "throttle"] }
 rand = "0.8.5"
 url = "2.4.1"
 serde = "1.0.210"
