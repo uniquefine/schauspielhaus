@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use chrono::{DateTime, FixedOffset, TimeZone, Utc};
+use chrono_tz::{Europe::Zurich, Tz};
 use diesel::prelude::*;
 use serde;
 use time::{format_description, OffsetDateTime};
@@ -86,14 +88,22 @@ pub struct Screening {
     pub start_time: OffsetDateTime,
 }
 
+pub fn to_zurich_time(offset_datetime: OffsetDateTime) -> DateTime<Tz> {
+    let utc_datetime: DateTime<Utc> =
+        DateTime::from_timestamp(offset_datetime.unix_timestamp(), 0).unwrap();
+    let zurich_datetime = utc_datetime.with_timezone(&Zurich);
+    zurich_datetime
+}
+
 // Implement std::fmt::Display for Screening
 impl std::fmt::Display for Screening {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        let format = format_description::parse("[day].[month].[year] [hour]:[minute]").unwrap();
         write!(
             f,
             "[{}]({}{})",
-            self.start_time.format(&format).unwrap(),
+            to_zurich_time(self.start_time)
+                .format("%d.%m.%Y %H:%M")
+                .to_string(),
             self.url,
             self.webid
         )

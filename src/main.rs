@@ -3,6 +3,7 @@ use std::hash::Hasher;
 
 use clap::Parser;
 use clap::Subcommand;
+use diesel::update;
 use diesel::PgConnection;
 use dotenvy::dotenv;
 use env_logger;
@@ -21,6 +22,7 @@ use schauspielhaus::models::get_plays_and_topics;
 use schauspielhaus::models::get_plays_without_topic;
 use schauspielhaus::models::put_chat;
 use schauspielhaus::models::put_topic;
+use schauspielhaus::models::to_zurich_time;
 use schauspielhaus::models::Chat;
 use schauspielhaus::models::PlayAndTopic;
 use schauspielhaus::models::PlayWithScreenings;
@@ -191,7 +193,7 @@ async fn answer(bot: Throttle<Bot>, msg: Message, cmd: Command) -> ResponseResul
                 .await
                 .expect("Sending welcome message failed");
 
-            let mut connection = &mut establish_connection();
+            let mut connection = establish_connection();
 
             let res = put_chat(
                 &mut connection,
@@ -344,8 +346,9 @@ async fn post_poll_for_topic(
 }
 
 fn option(s: &&Screening) -> String {
-    let format = format_description!("[weekday] [day].[month].[year] [hour]:[minute]");
-    s.start_time.format(&format).unwrap()
+    to_zurich_time(s.start_time)
+        .format("%A %d.%m.%Y %H:%M")
+        .to_string()
 }
 
 async fn ensure_chat_exists(bot: &Throttle<Bot>, msg_chat_id: ChatId) -> bool {
@@ -395,11 +398,6 @@ async fn refresh_topics(
         topic,
     } in plays
     {
-        // break if errors is not empty
-        if errors.len() > 0 {
-            break;
-        }
-
         let message_thread_id = match &topic {
             Some(t) => teloxide::types::ThreadId(teloxide::types::MessageId(t.message_thread_id)),
             None => {
@@ -439,15 +437,15 @@ async fn refresh_topics(
                     .await
                 {
                     Ok(_) => {}
-                    Err(RequestError::Api(ApiError::MessageToDeleteNotFound)) => {
-                        // ignore if the message is already deleted
+                    Err(RequestError::Api(ApiError::MessageToEditNotFound)) => {
+                        // ignore if the message was deleted
+                        continue;
                     }
                     Err(e) => {
                         errors.push(anyhow::Error::msg(format!(
-                            "Error deleting pinned message for play '{}': {}",
+                            "Error editing pinned message for play '{}': {}",
                             play.name, e
                         )));
-                        continue;
                     }
                 }
             }
@@ -456,16 +454,18 @@ async fn refresh_topics(
                     .await
                 {
                     Ok(id) => id,
-                    Err(RequestError::Api(ApiError::MessageToReplyNotFound)) => {
-                        // ignore if the topic was deleted
-                        continue;
-                    }
                     Err(e) => {
-                        errors.push(anyhow::Error::msg(format!(
-                            "Error sending play info for play '{}': {}",
-                            play.name, e
-                        )));
-                        continue;
+                        if let RequestError::Api(ApiError::Unknown(error)) = &e {
+                            if error == "Bad Request: message thread not found" {
+                                // ignore if the topic was deleted
+                            }
+                        } else {
+                            errors.push(anyhow::Error::msg(format!(
+                                "Error sending play info for play '{}': {}",
+                                play.name, e
+                            )));
+                        }
+                        0
                     }
                 };
         }
@@ -567,20 +567,6 @@ async fn run_sync_function_periodically(bot: &Throttle<Bot>) {
         for chat in chats {
             let chat_id = teloxide::prelude::ChatId(chat.id);
             match refresh_topics(bot, chat_id, false).await {
-                Ok(_) => {
-                    match bot
-                        .send_message(chat_id, "Topics refreshed")
-                        .disable_notification(true)
-                        .await
-                    {
-                        Ok(_) => {}
-                        // ignore if the chat was deleted
-                        Err(RequestError::Api(ApiError::ChatNotFound)) => {}
-                        Err(e) => {
-                            error!("Error sending message to chat {}: {}", chat.id, e);
-                        }
-                    }
-                }
                 Err(e) => {
                     match bot
                         .send_message(chat_id, format!("Error refreshing topics: {}", e))
@@ -597,6 +583,7 @@ async fn run_sync_function_periodically(bot: &Throttle<Bot>) {
                         }
                     }
                 }
+                Ok(_) => (),
             }
         }
         sleep(Duration::from_secs(60 * 60 * 3)).await;
