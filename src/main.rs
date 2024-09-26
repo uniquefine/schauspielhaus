@@ -1,6 +1,7 @@
 use std::hash::Hash;
 use std::hash::Hasher;
 
+use anyhow::Context;
 use clap::Parser;
 use clap::Subcommand;
 use diesel::update;
@@ -156,6 +157,9 @@ enum Command {
     /// Start a poll for this play.
     #[command(description = "(in a play topic) start a poll for this play.")]
     Poll,
+    /// (re)Post the description of the play.
+    #[command(description = "(in a play topic) repost the description of the play.")]
+    Description,
 }
 const HELP: &str = r"This bot only works in public super groups with topics enabled.";
 
@@ -290,8 +294,31 @@ async fn answer(bot: Throttle<Bot>, msg: Message, cmd: Command) -> ResponseResul
             }
             return Ok(());
         }
+        Command::Description => {
+            if !ensure_chat_exists(&bot, msg.chat.id).await {
+                return Ok(());
+            }
+            match msg.thread_id {
+                None => {
+                    bot.send_message(msg.chat.id, "Please use this command in a play topic")
+                        .await?;
+                }
+                Some(topic_id) => match post_description(&bot, msg.chat.id, topic_id).await {
+                    Ok(_) => {}
+                    Err(e) => {
+                        error!("Error posting description: {:?}", e);
+                        bot.send_message(
+                            msg.chat.id,
+                            format!("Error posting description: {:?}", e),
+                        )
+                        .await
+                        .map(|_| ())?;
+                    }
+                },
+            }
+            return Ok(());
+        }
     };
-
     Ok(())
 }
 
@@ -378,6 +405,59 @@ async fn ensure_chat_exists(bot: &Throttle<Bot>, msg_chat_id: ChatId) -> bool {
 fn random_icon_color() -> u32 {
     let colors = [0x6FB9F0, 0xFFD67E, 0xCB86DB, 0x8EEE98, 0xFF93B2, 0xFB6F5F];
     *colors.choose(&mut rand::thread_rng()).unwrap()
+}
+
+async fn post_description(
+    bot: &Throttle<Bot>,
+    msg_chat_id: ChatId,
+    topic_id: teloxide::types::ThreadId,
+) -> Result<(), anyhow::Error> {
+    let mut connection = establish_connection();
+    let play_with_screenings = match get_play_for_topic(&mut connection, topic_id.0 .0) {
+        Ok(p) => p,
+        Err(diesel::result::Error::NotFound) => {
+            return Err(anyhow::Error::msg("No play found for this topic."));
+        }
+        Err(e) => {
+            return Err(anyhow::Error::msg(format!(
+                "Unexpected error getting play for topic {}: {}",
+                topic_id, e
+            )));
+        }
+    };
+    let message_text = pinned_message(&play_with_screenings.play, &play_with_screenings.screenings);
+    let message_hash = (|| {
+        let mut hasher = std::collections::hash_map::DefaultHasher::new();
+        message_text.hash(&mut hasher);
+        hasher.finish()
+    })();
+    let pinned_message_id = create_pinned_message(&bot, message_text, msg_chat_id, topic_id)
+        .await
+        .with_context(|| {
+            format!(
+                "Error sending play info for play '{}'",
+                play_with_screenings.play.name
+            )
+        })?;
+
+    put_topic(
+        &mut connection,
+        Topic {
+            message_thread_id: topic_id.0 .0,
+            play_id: play_with_screenings.play.id,
+            chat_id: msg_chat_id.0,
+            pinned_message_id: pinned_message_id,
+            pinned_message_hash: message_hash as i64,
+            last_updated: OffsetDateTime::now_utc(),
+        },
+    )
+    .with_context(|| {
+        format!(
+            "Error saving topic for play '{}' in database",
+            play_with_screenings.play.name
+        )
+    })?;
+    Ok(())
 }
 
 async fn refresh_topics(
@@ -506,16 +586,16 @@ fn pinned_message(
         message_text.push_str("\n🎟️ *Screenings*:");
     }
     for screening in screenings {
+        let mut ticket_str = "".to_string();
+        if screening.ticket_url == "Ausverkauft" {
+            ticket_str = " (Ausverkauft)".to_string();
+        } else if screening.ticket_url != "" {
+            ticket_str = format!(" [Tickets]({})", screening.ticket_url);
+        }
         message_text.push_str(&format!(
-            "\n\\- {} [tickets]({})",
+            "\n\\- {}{}",
             markdown::escape(&option(&screening)),
-            format!(
-                "https://www.zurichticket.ch/shz.webshop/webticket/shop?event={}",
-                screening
-                    .webid
-                    .trim_start_matches("event_")
-                    .trim_end_matches("@www.schauspielhaus.ch"),
-            )
+            ticket_str,
         ));
     }
     message_text

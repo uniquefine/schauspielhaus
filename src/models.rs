@@ -86,6 +86,7 @@ pub struct Screening {
     pub location: String,
     pub url: String,
     pub start_time: OffsetDateTime,
+    pub ticket_url: String,
 }
 
 pub fn to_zurich_time(offset_datetime: OffsetDateTime) -> DateTime<Tz> {
@@ -119,6 +120,7 @@ pub struct NewScreening<'a> {
     pub location: &'a str,
     pub url: &'a str,
     pub start_time: OffsetDateTime,
+    pub ticket_url: &'a str,
 }
 
 #[derive(Default, serde::Serialize)]
@@ -380,6 +382,7 @@ pub fn create_play_with_screenings(
                 location: &s.location,
                 url: &s.url,
                 start_time: s.start_time,
+                ticket_url: &s.ticket_url,
             })
             .map(|s| {
                 let changeset_screening = s.clone();

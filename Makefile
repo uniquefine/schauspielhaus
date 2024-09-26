@@ -4,8 +4,8 @@ test:
 	cargo test
 
 local:
-	docker compose up -f compose.yml -d
-	cargo start
+	docker compose -f compose.yml up -d
+	op run --env-file=.env -- cargo run -- start
 
 proxy-prod-db:
 	fly proxy 55432:5432 -a frosty-voice-1550

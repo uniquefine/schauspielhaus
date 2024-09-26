@@ -26,6 +26,7 @@ diesel::table! {
         location -> Varchar,
         url -> Varchar,
         start_time -> Timestamptz,
+        ticket_url -> Text,
     }
 }
 

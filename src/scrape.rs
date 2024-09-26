@@ -35,6 +35,8 @@ lazy_static! {
     static ref PLAY_TITLE_SELECTOR: Selector = Selector::parse("h1.article__title").unwrap();
     // Select the play description on the play page.
     static ref PLAY_DESCRIPTION_SELECTOR: Selector = Selector::parse("div.article-content__text p").unwrap();
+    // Select the play subtitle on the play page.
+    static ref PLAY_SUBTITLE_SELECTOR: Selector = Selector::parse("h2.article__subtitle").unwrap();
 }
 
 pub async fn download_calendar() -> Result<String> {
@@ -112,7 +114,7 @@ pub async fn get_plays() -> Result<HashMap<String, PlayWithScreenings>> {
 
 #[tokio::test]
 async fn test_download_play() {
-    let play = &find_plays(&download_calendar().await.unwrap())[0];
+    let play = &find_plays(&download_calendar().await.unwrap())[1];
     let play_page_content = reqwest::get(format!("{}{}", BASE_URL, play))
         .await
         .unwrap()
@@ -169,6 +171,22 @@ pub async fn find_play_with_screenings(
         })
         .collect::<Vec<String>>()
         .join("\n");
+
+    let subtitle = fragment
+        .select(&PLAY_SUBTITLE_SELECTOR)
+        .map(|element| {
+            element
+                .text()
+                .collect::<String>()
+                .replace("\n", " ")
+                .trim()
+                .to_string()
+        })
+        .collect::<Vec<String>>()
+        .join("\n");
+    if subtitle != "" {
+        play.play.description = format!("{}\n\n{}", subtitle, play.play.description);
+    }
 
     // Get meta info (text that is to the left of the screening times)
     play.play.meta_info = fragment
@@ -228,6 +246,28 @@ async fn collect_screening(production_row: ElementRef<'_>) -> Result<Screening> 
         .context("error finding href attribute for element")?
         .to_string();
 
+    let mut ticket_url = "".to_string();
+    // look for span.activity-ticket__label with text "Ausverkauft"
+    let sold_out_selector = Selector::parse("span.activity-ticket__label").unwrap();
+    let sold_out = production_row
+        .select(&sold_out_selector)
+        .next()
+        .map(|element| element.inner_html().contains("Ausverkauft"));
+    if sold_out == Some(true) {
+        ticket_url = "Ausverkauft".to_string();
+    } else {
+        // look for the href of a.activity-ticket__button
+        let ticket_selector = Selector::parse("a.activity-ticket__button").unwrap();
+        let url = production_row
+            .select(&ticket_selector)
+            .next()
+            .map(|element| element.value().attr("href"))
+            .flatten();
+        if let Some(u) = url {
+            ticket_url = u.to_string();
+        }
+    }
+
     // Download ics file at the calendar link and parse the contents to extract
     // Description, start and end date.
     let buf = reqwest::get(format!("{}{}", BASE_URL, calendar_link))
@@ -256,6 +296,7 @@ async fn collect_screening(production_row: ElementRef<'_>) -> Result<Screening> 
                 location: "".to_string(),
                 webid: i,
                 start_time: s,
+                ticket_url: ticket_url,
             }
         }
         (i, s) => {
