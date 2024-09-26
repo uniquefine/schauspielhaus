@@ -421,7 +421,6 @@ async fn refresh_topics(
         };
         // Delete the existing pinned message
         let mut pinned_message_id = topic.as_ref().map_or(0, |t| t.pinned_message_id);
-        let pinned_message_hash = topic.as_ref().map_or(0, |t| t.pinned_message_hash);
 
         let message_text = pinned_message(&play, &screenings);
         let message_hash = (|| {
@@ -429,26 +428,7 @@ async fn refresh_topics(
             message_text.hash(&mut hasher);
             hasher.finish()
         })();
-        if force || (pinned_message_hash as u64) != message_hash {
-            if pinned_message_id != 0 {
-                // The message has changed, update it
-                match bot
-                    .delete_message(msg_chat_id, teloxide::types::MessageId(pinned_message_id))
-                    .await
-                {
-                    Ok(_) => {}
-                    Err(RequestError::Api(ApiError::MessageToEditNotFound)) => {
-                        // ignore if the message was deleted
-                        continue;
-                    }
-                    Err(e) => {
-                        errors.push(anyhow::Error::msg(format!(
-                            "Error editing pinned message for play '{}': {}",
-                            play.name, e
-                        )));
-                    }
-                }
-            }
+        if force || pinned_message_id == 0 {
             pinned_message_id =
                 match create_pinned_message(&bot, message_text, msg_chat_id, message_thread_id)
                     .await
